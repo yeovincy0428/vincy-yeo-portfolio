@@ -1,6 +1,6 @@
 import React from 'react';
 
-// 保持不变的 SVG 组件：BrushUnderline 与 WashiTape
+// Hand-drawn brush underline
 export const BrushUnderline: React.FC<{ className?: string; color?: string }> = ({
   className = 'w-full h-3',
   color = '#C8523B'
@@ -13,6 +13,7 @@ export const BrushUnderline: React.FC<{ className?: string; color?: string }> = 
   </svg>
 );
 
+// Washi masking tape sticker effect
 export const WashiTape: React.FC<{ className?: string; color?: string; angle?: string }> = ({
   className = 'w-24 h-6',
   color = '#E7DFCF',
@@ -29,14 +30,29 @@ export const WashiTape: React.FC<{ className?: string; color?: string; angle?: s
   </div>
 );
 
-// 手绘分镜封面生成器
+// Hand-drawn film clapper icon for Navbar
+export const DoodleClapper: React.FC<{ className?: string }> = ({
+  className = 'w-6 h-6'
+}) => (
+  <svg viewBox="0 0 32 32" fill="none" className={className}>
+    <path d="M4 12 L28 12 L28 26 C28 27.1 27.1 28 26 28 L6 28 C4.9 28 4 27.1 4 26 Z" fill="#2B2724" stroke="#2B2724" strokeWidth="1.5" />
+    <path d="M4 12 L28 6 L28 12 L4 12 Z" fill="#FAF6EE" stroke="#2B2724" strokeWidth="1.5" />
+    <path d="M8 7 L12 11" stroke="#2B2724" strokeWidth="1.5" />
+    <path d="M16 5 L20 9" stroke="#2B2724" strokeWidth="1.5" />
+    <path d="M24 3 L28 7" stroke="#2B2724" strokeWidth="1.5" />
+    <circle cx="9" cy="18" r="1.5" fill="#FAF6EE" />
+    <path d="M14 18 L24 18" stroke="#FAF6EE" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M14 22 L21 22" stroke="#FAF6EE" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+// Storyboard Panel Hand-drawn Illustration
 export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: string }> = ({
   type = 'condo',
   title = 'SCENE'
 }) => {
   switch (type) {
     case 'condo':
-      // Unforgettable 18 原版精美手绘封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF8F3]">
           <line x1="20" y1="140" x2="300" y2="140" stroke="#3A3632" strokeWidth="1.5" />
@@ -50,7 +66,6 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
       );
 
     case 'im-on-my-way':
-      // I'm On My Way 专属生成的 3D VFX/雷电特效风格手绘封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#201D24]">
           <path d="M160 10 L145 70 L170 85 L150 170" stroke="#FFB703" strokeWidth="3" strokeLinecap="round" />
@@ -64,7 +79,6 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
 
     case 'pets-haven':
     default:
-      // My Pets Haven 公益纪录片手绘写实封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF8F3]">
           <line x1="20" y1="150" x2="300" y2="150" stroke="#3A3632" strokeWidth="1.5" />
