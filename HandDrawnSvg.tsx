@@ -46,6 +46,28 @@ export const DoodleClapper: React.FC<{ className?: string }> = ({
   </svg>
 );
 
+// Stamp seal for Awards Section
+export const StampSeal: React.FC<{ className?: string; color?: string }> = ({
+  className = 'w-16 h-16',
+  color = '#C8523B'
+}) => (
+  <svg viewBox="0 0 100 100" fill="none" className={className}>
+    <circle cx="50" cy="50" r="42" stroke={color} strokeWidth="3" strokeDasharray="6 4" opacity="0.85" />
+    <circle cx="50" cy="50" r="36" stroke={color} strokeWidth="1.5" />
+    <path d="M50 22 L56 36 L71 37 L59 47 L63 62 L50 54 L37 62 L41 47 L29 37 L44 36 Z" fill={color} opacity="0.8" />
+  </svg>
+);
+
+// Sketch arrow for Awards / Interactive hints
+export const SketchArrow: React.FC<{ className?: string; color?: string }> = ({
+  className = 'w-12 h-6',
+  color = '#3A3632'
+}) => (
+  <svg viewBox="0 0 60 30" fill="none" className={className}>
+    <path d="M5 15 C20 12, 35 18, 50 14 M42 7 C45 10, 48 12, 52 14 C48 17, 44 20, 40 23" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 // Storyboard Panel Hand-drawn Illustration
 export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: string }> = ({
   type = 'condo',
