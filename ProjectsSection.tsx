@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Play, Film, ExternalLink, BookOpen, Check, Filter } from 'lucide-react';
+import { Play, Film, ExternalLink, BookOpen, Check } from 'lucide-react';
 import { StoryboardPanelIllustration, WashiTape } from './HandDrawnSvg';
 import { StoryboardViewerModal } from './StoryboardViewerModal';
 
@@ -17,20 +17,22 @@ interface ProjectItem {
   equipment: string[];
   bilibiliBvid: string;
   bilibiliUrl: string;
-  storyboardPagesCount: number;
-  cameraSetupsCount: number;
+  storyboardPagesCount?: number;
+  cameraSetupsCount?: number;
+  hasStoryboard: boolean; // 是否拥有故事板拆解
+  pdfUrl?: string;
   awards?: string[];
-  storyboardPreview: Array<{ sceneNo: string; panelDoodleType: string }>;
+  panelDoodleType: string;
 }
 
 const PROJECTS_DATA: ProjectItem[] = [
   {
     id: 'p1',
     title: '《Unforgettable 18》手绘电影分镜脚本',
-    titleEn: 'Unforgettable 18 - Storyboard & Film',
+    titleEn: 'Unforgettable 18 - Film & Storyboard',
     type: 'Narrative Film',
     typeZh: '剧情短片',
-    year: '2024',
+    year: '2022',
     roles: ['导演 / Director', '分镜师 / Storyboard Artist'],
     summary: '讲述青春叙事短片《Unforgettable 18》。通过高度精细的手绘镜头规划、严谨的轴线控制与光影层次，展现极具戏剧张力的视听语言。',
     highlights: [
@@ -40,39 +42,39 @@ const PROJECTS_DATA: ProjectItem[] = [
     equipment: ['Broadcast Tripod', 'Wireless Lavalier', 'Color Monitor'],
     bilibiliBvid: '3azZYYO',
     bilibiliUrl: 'https://b23.tv/3azZYYO',
+    hasStoryboard: true,
     storyboardPagesCount: 16,
     cameraSetupsCount: 32,
-    awards: ['入围第18届青年影像节最佳镜头设计', '最佳手绘分镜创作奖'],
-    storyboardPreview: [
-      { sceneNo: 'SCENE 01', panelDoodleType: 'condo' }
-    ]
+    pdfUrl: '/storyboards/unforgettable-18.pdf',
+    awards: ['Winner - Best Malaysian Short Film (Nitiin 2022)', 'Winner - Best Poster'],
+    panelDoodleType: 'condo' // 保留你原本喜欢的手绘高楼封面
   },
   {
     id: 'p2',
-    title: '《Eyes On Me》视听语言与镜头调度',
-    titleEn: 'Eyes On Me - Camera Blocking',
+    title: '《I’m On My Way》3D/CGI 动画与特效预演',
+    titleEn: "I'm On My Way - CGI Short & Pre-vis",
     type: 'Animation & VFX',
-    typeZh: '视觉短片',
+    typeZh: '动画与合成',
     year: '2024',
-    roles: ['分镜总监', '预演师'],
-    summary: '围绕视线引导与空间张力展开的短片分镜。精细计算镜头焦段与人物走位，打造强烈的视觉沉浸感。',
+    roles: ['动画制作 / Animation', '特效合成 / Compositing'],
+    summary: '围绕虚拟多维空间与红黄双色能量对决展开的 CGI 动画短片。融合 3D 镜头 Matchmove 跟踪与三维变身动作调度。',
     highlights: [
-      '精准的视线轴线切分与镜头匹配，引导观众情绪起伏',
-      '多机位组合预演，将叙事节奏精确控制在秒级'
+      '完整的 3D 镜头预演与 Matchmove 跟踪，精准掌控打斗视觉节奏',
+      '手绘动作分镜配合 Maya/AE 特效合成管线，打造流畅战斗视听'
     ],
-    equipment: ['3D Pre-vis Engine', 'Focal Length Calculator'],
-    bilibiliBvid: 'jyGfsJR',
-    bilibiliUrl: 'https://b23.tv/jyGfsJR',
-    storyboardPagesCount: 12,
+    equipment: ['3D Pre-vis Engine', 'Matchmove Rig', 'AE Compositing'],
+    bilibiliBvid: '3azZYYO',
+    bilibiliUrl: 'https://b23.tv/3azZYYO',
+    hasStoryboard: true,
+    storyboardPagesCount: 6,
     cameraSetupsCount: 24,
-    storyboardPreview: [
-      { sceneNo: 'SCENE 01', panelDoodleType: 'anime-fight' }
-    ]
+    pdfUrl: '/storyboards/im-on-my-way.pdf',
+    panelDoodleType: 'im-on-my-way' // 风格色调统一的新生成手绘线稿封面
   },
   {
     id: 'p3',
-    title: '《My Pets Haven》公益纪录短片分镜',
-    titleEn: 'My Pets Haven - Public Welfare Storyboard',
+    title: '《My Pets Haven》公益纪录短片',
+    titleEn: 'My Pets Haven - Public Welfare Short Film',
     type: 'Documentary',
     typeZh: '公益纪录片',
     year: '2023',
@@ -85,11 +87,8 @@ const PROJECTS_DATA: ProjectItem[] = [
     equipment: ['Cinema Rig', 'Low-Angle Gimbal'],
     bilibiliBvid: 'MzxJiyO',
     bilibiliUrl: 'https://b23.tv/MzxJiyO',
-    storyboardPagesCount: 16,
-    cameraSetupsCount: 20,
-    storyboardPreview: [
-      { sceneNo: 'SCENE 01', panelDoodleType: 'adoption-box' }
-    ]
+    hasStoryboard: false, // 明确标注没有故事板，不显示PDF拆解按钮
+    panelDoodleType: 'pets-haven' // 风格色调统一的新生成手绘线稿封面
   }
 ];
 
@@ -132,7 +131,7 @@ const ParallaxProjectCard: React.FC<{
         <motion.div style={{ y: yArtwork }} className="lg:col-span-6 flex flex-col space-y-4">
           <div className="relative aspect-[16/10] w-full rounded-2xl border-2 border-[#383431] overflow-hidden bg-[#FAF8F3] shadow-sm group-hover:border-[#C8523B] transition-colors">
             <StoryboardPanelIllustration
-              type={project.storyboardPreview[0]?.panelDoodleType || 'condo'}
+              type={project.panelDoodleType}
               title={project.title}
             />
 
@@ -141,18 +140,22 @@ const ParallaxProjectCard: React.FC<{
               <span>{project.typeZh} · {project.year}</span>
             </div>
 
-            <div className="absolute bottom-3 left-3 bg-[#FAF6EE]/95 border border-[#383431] text-[#2B2724] px-2.5 py-1 rounded-md text-xs font-mono font-bold flex items-center gap-1 shadow-xs">
-              <BookOpen className="w-3.5 h-3.5 text-[#C8523B]" />
-              <span>{project.storyboardPagesCount} 页手绘分镜 · {project.cameraSetupsCount} 机位规划</span>
-            </div>
+            {project.hasStoryboard && (
+              <div className="absolute bottom-3 left-3 bg-[#FAF6EE]/95 border border-[#383431] text-[#2B2724] px-2.5 py-1 rounded-md text-xs font-mono font-bold flex items-center gap-1 shadow-xs">
+                <BookOpen className="w-3.5 h-3.5 text-[#C8523B]" />
+                <span>{project.storyboardPagesCount} 页手绘分镜 · {project.cameraSetupsCount} 机位规划</span>
+              </div>
+            )}
 
-            <button
-              onClick={() => onInspect(project)}
-              className="absolute inset-0 bg-[#2B2724]/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm backdrop-blur-[2px] cursor-pointer"
-            >
-              <BookOpen className="w-5 h-5 text-[#D49A3D]" />
-              <span>点击展开高精度分镜剖析 (Inspect Storyboard)</span>
-            </button>
+            {project.hasStoryboard && (
+              <button
+                onClick={() => onInspect(project)}
+                className="absolute inset-0 bg-[#2B2724]/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm backdrop-blur-[2px] cursor-pointer"
+              >
+                <BookOpen className="w-5 h-5 text-[#D49A3D]" />
+                <span>点击展开高精度分镜剖析 (Inspect Storyboard)</span>
+              </button>
+            )}
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF6EE] border border-[#383431]/30">
@@ -180,7 +183,7 @@ const ParallaxProjectCard: React.FC<{
           </div>
         </motion.div>
 
-        {/* 右侧：详细说明 */}
+        {/* 右侧：文字信息与按钮 */}
         <motion.div style={{ y: yDetails }} className="lg:col-span-6 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex flex-wrap gap-1.5 mb-3">
@@ -233,15 +236,22 @@ const ParallaxProjectCard: React.FC<{
               ))}
             </div>
 
-            <button
-              type="button"
-              onClick={() => onInspect(project)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-mono bg-[#2E2B28] text-white hover:bg-[#C8523B] transition-colors shadow-sm cursor-pointer"
-            >
-              <BookOpen className="w-4 h-4 text-[#D49A3D]" />
-              <span>{lang === 'zh' ? '完整分镜拆解' : 'Storyboard Breakdown'}</span>
-              <span className="text-white/60">({project.storyboardPagesCount}P)</span>
-            </button>
+            {/* 如果项目有故事板，才显示拆解按钮 */}
+            {project.hasStoryboard ? (
+              <button
+                type="button"
+                onClick={() => onInspect(project)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-mono bg-[#2E2B28] text-white hover:bg-[#C8523B] transition-colors shadow-sm cursor-pointer"
+              >
+                <BookOpen className="w-4 h-4 text-[#D49A3D]" />
+                <span>{lang === 'zh' ? '完整分镜拆解' : 'Storyboard Breakdown'}</span>
+                <span className="text-white/60">({project.storyboardPagesCount}P)</span>
+              </button>
+            ) : (
+              <span className="text-xs font-mono text-[#8C8275] italic">
+                {lang === 'zh' ? '（纪实作品，不设手绘故事板）' : '(Documentary - No Storyboard)'}
+              </span>
+            )}
           </div>
         </motion.div>
       </div>
@@ -320,8 +330,8 @@ export const ProjectsSection: React.FC<{ lang?: 'zh' | 'en' }> = ({ lang = 'zh' 
           isOpen={!!activeModalProject}
           onClose={() => setActiveModalProject(null)}
           title={activeModalProject.title}
-          pdfUrl={`/storyboards/${activeModalProject.id}.pdf`}
-          pageCount={activeModalProject.storyboardPagesCount}
+          pdfUrl={activeModalProject.pdfUrl || ''}
+          pageCount={activeModalProject.storyboardPagesCount || 1}
           lang={lang}
         />
       )}
