@@ -1,5 +1,16 @@
 import React from 'react';
 
+// 电影场记板手绘图标
+export const DoodleClapper: React.FC<{ className?: string }> = ({ className = 'w-6 h-6' }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M4 11v8a2 2 0 0 0 2 2 h12a2 2 0 0 0 2 -2v-8Z" />
+    <path d="M4 11h16" />
+    <path d="M4 11l4 -6h4l-4 6" />
+    <path d="M12 11l4 -6h4l-4 6" />
+  </svg>
+);
+
+// 笔刷下划线
 export const BrushUnderline: React.FC<{ className?: string; color?: string }> = ({
   className = 'w-full h-3',
   color = '#C8523B'
@@ -12,6 +23,7 @@ export const BrushUnderline: React.FC<{ className?: string; color?: string }> = 
   </svg>
 );
 
+// 和风胶带
 export const WashiTape: React.FC<{ className?: string; color?: string; angle?: string }> = ({
   className = 'w-24 h-6',
   color = '#E7DFCF',
@@ -49,7 +61,7 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
       );
 
     case 'im-on-my-way':
-      // I'm On My Way 手绘封面
+      // I'm On My Way 特效手绘封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#201D24]">
           <path d="M160 10 L145 70 L170 85 L150 170" stroke="#FFB703" strokeWidth="3" strokeLinecap="round" />
@@ -63,28 +75,23 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
 
     case 'pets-haven':
     default:
-      // My Pets Haven 猫猫狗狗与收留所小屋手绘封面（复古和风）
+      // My Pets Haven 猫狗与收留所小屋手绘封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF6EE]">
-          {/* 背景小暖房 */}
           <path d="M210 70 L260 35 L310 70 L310 150 L210 150 Z" fill="#E8DFCF" stroke="#383431" strokeWidth="2" />
           <path d="M245 100 Q260 85 275 100 V150 H245 Z" fill="#FAF6EE" stroke="#383431" strokeWidth="1.5" />
           <path d="M230 110 H290" stroke="#C8523B" strokeWidth="1.5" strokeDasharray="3 3" />
           <text x="235" y="102" fill="#C8523B" fontSize="9" fontWeight="bold">SHELTER</text>
 
-          {/* 小狗手绘（左侧） */}
           <ellipse cx="90" cy="120" rx="22" ry="16" fill="#D4C4A8" stroke="#383431" strokeWidth="2" />
           <circle cx="70" cy="100" r="14" fill="#D4C4A8" stroke="#383431" strokeWidth="2" />
-          {/* 耳朵与眼睛 */}
           <path d="M60 92 Q52 105 62 112" stroke="#383431" strokeWidth="2" fill="#8C7D6B" />
           <circle cx="66" cy="98" r="2" fill="#383431" />
           <circle cx="74" cy="98" r="2" fill="#383431" />
           <ellipse cx="70" cy="103" rx="3" ry="2" fill="#C8523B" />
 
-          {/* 猫猫手绘（右侧） */}
           <ellipse cx="150" cy="125" rx="18" ry="14" fill="#FAF8F3" stroke="#383431" strokeWidth="2" />
           <circle cx="150" cy="102" r="12" fill="#FAF8F3" stroke="#383431" strokeWidth="2" />
-          {/* 猫耳朵 */}
           <polygon points="140,94 144,82 150,92" fill="#FAF8F3" stroke="#383431" strokeWidth="1.8" />
           <polygon points="150,92 156,82 160,94" fill="#FAF8F3" stroke="#383431" strokeWidth="1.8" />
           <line x1="142" y1="104" x2="132" y2="102" stroke="#383431" strokeWidth="1.2" />
@@ -92,13 +99,11 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
           <line x1="158" y1="104" x2="168" y2="102" stroke="#383431" strokeWidth="1.2" />
           <line x1="158" y1="106" x2="167" y2="108" stroke="#383431" strokeWidth="1.2" />
 
-          {/* 爱心爪印装饰 */}
           <path d="M112 80 Q116 72 120 80 Q124 72 128 80 Q120 92 120 92 Z" fill="#C8523B" />
           <circle cx="110" cy="98" r="3" fill="#D4C4A8" />
           <circle cx="118" cy="95" r="3" fill="#D4C4A8" />
           <circle cx="126" cy="98" r="3" fill="#D4C4A8" />
 
-          {/* 地平线 */}
           <line x1="10" y1="145" x2="310" y2="145" stroke="#383431" strokeWidth="2" />
 
           <rect x="15" y="15" width="115" height="22" rx="3" fill="#2B2724" />
