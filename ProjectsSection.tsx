@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { PROJECTS } from '../data/portfolioData';
-import { ProjectItem } from '../types';
+import { PROJECTS } from './portfolioData';
+import { ProjectItem } from './types';
 import { Play, Film, ExternalLink, Award, Sparkles, Layers, BookOpen, Camera, Check, Filter } from 'lucide-react';
 import { StoryboardPanelIllustration, WashiTape, BrushUnderline, DoodleCamera } from './HandDrawnSvg';
 import { StoryboardViewerModal } from './StoryboardViewerModal';
