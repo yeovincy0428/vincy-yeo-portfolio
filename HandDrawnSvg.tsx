@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Hand-drawn brush underline
 export const BrushUnderline: React.FC<{ className?: string; color?: string }> = ({
   className = 'w-full h-3',
   color = '#C8523B'
@@ -13,7 +12,6 @@ export const BrushUnderline: React.FC<{ className?: string; color?: string }> = 
   </svg>
 );
 
-// Washi masking tape sticker effect
 export const WashiTape: React.FC<{ className?: string; color?: string; angle?: string }> = ({
   className = 'w-24 h-6',
   color = '#E7DFCF',
@@ -30,51 +28,14 @@ export const WashiTape: React.FC<{ className?: string; color?: string; angle?: s
   </div>
 );
 
-// Hand-drawn film clapper icon for Navbar
-export const DoodleClapper: React.FC<{ className?: string }> = ({
-  className = 'w-6 h-6'
-}) => (
-  <svg viewBox="0 0 32 32" fill="none" className={className}>
-    <path d="M4 12 L28 12 L28 26 C28 27.1 27.1 28 26 28 L6 28 C4.9 28 4 27.1 4 26 Z" fill="#2B2724" stroke="#2B2724" strokeWidth="1.5" />
-    <path d="M4 12 L28 6 L28 12 L4 12 Z" fill="#FAF6EE" stroke="#2B2724" strokeWidth="1.5" />
-    <path d="M8 7 L12 11" stroke="#2B2724" strokeWidth="1.5" />
-    <path d="M16 5 L20 9" stroke="#2B2724" strokeWidth="1.5" />
-    <path d="M24 3 L28 7" stroke="#2B2724" strokeWidth="1.5" />
-    <circle cx="9" cy="18" r="1.5" fill="#FAF6EE" />
-    <path d="M14 18 L24 18" stroke="#FAF6EE" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M14 22 L21 22" stroke="#FAF6EE" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-);
-
-// Stamp seal for Awards Section
-export const StampSeal: React.FC<{ className?: string; color?: string }> = ({
-  className = 'w-16 h-16',
-  color = '#C8523B'
-}) => (
-  <svg viewBox="0 0 100 100" fill="none" className={className}>
-    <circle cx="50" cy="50" r="42" stroke={color} strokeWidth="3" strokeDasharray="6 4" opacity="0.85" />
-    <circle cx="50" cy="50" r="36" stroke={color} strokeWidth="1.5" />
-    <path d="M50 22 L56 36 L71 37 L59 47 L63 62 L50 54 L37 62 L41 47 L29 37 L44 36 Z" fill={color} opacity="0.8" />
-  </svg>
-);
-
-// Sketch arrow for Awards / Interactive hints
-export const SketchArrow: React.FC<{ className?: string; color?: string }> = ({
-  className = 'w-12 h-6',
-  color = '#3A3632'
-}) => (
-  <svg viewBox="0 0 60 30" fill="none" className={className}>
-    <path d="M5 15 C20 12, 35 18, 50 14 M42 7 C45 10, 48 12, 52 14 C48 17, 44 20, 40 23" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-// Storyboard Panel Hand-drawn Illustration
+// 手绘分镜/封面插画生成器
 export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: string }> = ({
   type = 'condo',
   title = 'SCENE'
 }) => {
   switch (type) {
     case 'condo':
+      // Unforgettable 18 原版精美手绘封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF8F3]">
           <line x1="20" y1="140" x2="300" y2="140" stroke="#3A3632" strokeWidth="1.5" />
@@ -88,6 +49,7 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
       );
 
     case 'im-on-my-way':
+      // I'm On My Way 手绘封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#201D24]">
           <path d="M160 10 L145 70 L170 85 L150 170" stroke="#FFB703" strokeWidth="3" strokeLinecap="round" />
@@ -101,12 +63,45 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
 
     case 'pets-haven':
     default:
+      // My Pets Haven 猫猫狗狗与收留所小屋手绘封面（复古和风）
       return (
-        <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF8F3]">
-          <line x1="20" y1="150" x2="300" y2="150" stroke="#3A3632" strokeWidth="1.5" />
-          <circle cx="160" cy="110" r="25" stroke="#2B2724" strokeWidth="2" fill="#E8DFCF" />
-          <path d="M145 100 Q160 85 175 100" stroke="#C8523B" strokeWidth="2" fill="none" />
-          <rect x="15" y="15" width="110" height="22" rx="3" fill="#2B2724" />
+        <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF6EE]">
+          {/* 背景小暖房 */}
+          <path d="M210 70 L260 35 L310 70 L310 150 L210 150 Z" fill="#E8DFCF" stroke="#383431" strokeWidth="2" />
+          <path d="M245 100 Q260 85 275 100 V150 H245 Z" fill="#FAF6EE" stroke="#383431" strokeWidth="1.5" />
+          <path d="M230 110 H290" stroke="#C8523B" strokeWidth="1.5" strokeDasharray="3 3" />
+          <text x="235" y="102" fill="#C8523B" fontSize="9" fontWeight="bold">SHELTER</text>
+
+          {/* 小狗手绘（左侧） */}
+          <ellipse cx="90" cy="120" rx="22" ry="16" fill="#D4C4A8" stroke="#383431" strokeWidth="2" />
+          <circle cx="70" cy="100" r="14" fill="#D4C4A8" stroke="#383431" strokeWidth="2" />
+          {/* 耳朵与眼睛 */}
+          <path d="M60 92 Q52 105 62 112" stroke="#383431" strokeWidth="2" fill="#8C7D6B" />
+          <circle cx="66" cy="98" r="2" fill="#383431" />
+          <circle cx="74" cy="98" r="2" fill="#383431" />
+          <ellipse cx="70" cy="103" rx="3" ry="2" fill="#C8523B" />
+
+          {/* 猫猫手绘（右侧） */}
+          <ellipse cx="150" cy="125" rx="18" ry="14" fill="#FAF8F3" stroke="#383431" strokeWidth="2" />
+          <circle cx="150" cy="102" r="12" fill="#FAF8F3" stroke="#383431" strokeWidth="2" />
+          {/* 猫耳朵 */}
+          <polygon points="140,94 144,82 150,92" fill="#FAF8F3" stroke="#383431" strokeWidth="1.8" />
+          <polygon points="150,92 156,82 160,94" fill="#FAF8F3" stroke="#383431" strokeWidth="1.8" />
+          <line x1="142" y1="104" x2="132" y2="102" stroke="#383431" strokeWidth="1.2" />
+          <line x1="142" y1="106" x2="133" y2="108" stroke="#383431" strokeWidth="1.2" />
+          <line x1="158" y1="104" x2="168" y2="102" stroke="#383431" strokeWidth="1.2" />
+          <line x1="158" y1="106" x2="167" y2="108" stroke="#383431" strokeWidth="1.2" />
+
+          {/* 爱心爪印装饰 */}
+          <path d="M112 80 Q116 72 120 80 Q124 72 128 80 Q120 92 120 92 Z" fill="#C8523B" />
+          <circle cx="110" cy="98" r="3" fill="#D4C4A8" />
+          <circle cx="118" cy="95" r="3" fill="#D4C4A8" />
+          <circle cx="126" cy="98" r="3" fill="#D4C4A8" />
+
+          {/* 地平线 */}
+          <line x1="10" y1="145" x2="310" y2="145" stroke="#383431" strokeWidth="2" />
+
+          <rect x="15" y="15" width="115" height="22" rx="3" fill="#2B2724" />
           <text x="22" y="30" fill="#FFF" fontSize="10" fontWeight="bold">MY PETS HAVEN</text>
         </svg>
       );
