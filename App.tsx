@@ -5,7 +5,7 @@ import { ThreeDStudioSection } from './ThreeDStudioSection';
 import { AwardsSection } from './AwardsSection';
 import { ExperienceTimeline } from './ExperienceTimeline';
 import { ContactFooter } from './ContactFooter';
-import { FilmDivider } from './FilmDivider';
+import { FilmDivider } from './src/components/FilmDivider';
 
 export function App() {
   const [lang, setLang] = useState<'zh' | 'en'>('zh');
