@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PERSONAL_INFO } from '../data/portfolioData';
+import { PERSONAL_INFO } from './portfolioData';
 import { Mail, Phone, MessageSquare, HardDrive, Play, Copy, Check, ExternalLink, Heart, Sparkles } from 'lucide-react';
 import { WashiTape, DoodleClapper, StampSeal, BrushUnderline } from './HandDrawnSvg';
 
