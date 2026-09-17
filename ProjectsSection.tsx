@@ -5,6 +5,82 @@ interface ProjectsSectionProps {
   lang: 'zh' | 'en';
 }
 
+// 互动组件：左右滑动对比手绘分镜与成品画面
+const InteractiveStoryboardCard: React.FC<{
+  draftImg: string;
+  finalImg: string;
+  title: string;
+  pageCount: number;
+  meta: string;
+  lang: 'zh' | 'en';
+}> = ({ draftImg, finalImg, title, pageCount, meta, lang }) => {
+  const [sliderPos, setSliderPos] = useState(50);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    const percent = (x / rect.width) * 100;
+    setSliderPos(percent);
+  };
+
+  return (
+    <div 
+      className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#1C1C1C] border border-[#1C1C1C]/15 group cursor-ew-resize select-none shadow-md"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setSliderPos(50);
+      }}
+    >
+      {/* 底层：最终渲染/正片画面 */}
+      <img 
+        src={finalImg} 
+        alt={`${title} Final`}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+
+      {/* 上层：手绘分镜草稿 (受滑块控制显示宽度) */}
+      <div 
+        className="absolute inset-0 overflow-hidden"
+        style={{ width: `${sliderPos}%` }}
+      >
+        <img 
+          src={draftImg} 
+          alt={`${title} Draft`}
+          className="absolute inset-0 w-full h-full object-cover max-w-none transition-transform duration-700 ease-out group-hover:scale-105 filter grayscale contrast-125 brightness-95"
+          style={{ width: '100%', height: '100%' }}
+        />
+        <span className="absolute bottom-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-[#FAF8F5] text-[10px] font-mono px-2 py-0.5 rounded uppercase tracking-widest border border-white/10">
+          STORYBOARD DRAFT
+        </span>
+      </div>
+
+      {/* 拖拽对比线 */}
+      <div 
+        className="absolute top-0 bottom-0 w-[2px] bg-[#C8523B] shadow-[0_0_10px_rgba(200,82,59,0.8)] z-20 pointer-events-none"
+        style={{ left: `${sliderPos}%` }}
+      >
+        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 bg-[#FAF8F5] border-2 border-[#C8523B] rounded-full flex items-center justify-center shadow-lg text-[10px] font-bold text-[#1C1C1C]">
+          ↔
+        </div>
+      </div>
+
+      {/* 顶部标签 */}
+      <div className="absolute top-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-white text-[11px] font-mono px-3 py-1 rounded-full z-10 border border-white/10 flex items-center gap-1.5 shadow-sm">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#C8523B] animate-pulse" />
+        <span>📖 {pageCount} {lang === 'zh' ? '页分镜' : 'P Storyboard'} · {meta}</span>
+      </div>
+
+      {/* 交互提示 */}
+      <div className={`absolute bottom-3 right-3 bg-[#1C1C1C]/90 backdrop-blur-md text-white/90 text-[10px] font-mono px-3 py-1 rounded-full z-10 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-70'}`}>
+        {lang === 'zh' ? '👈 左右滑动对比手绘/镜头 👉' : '👈 Hover to compare Draft vs Final 👉'}
+      </div>
+    </div>
+  );
+};
+
 export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
   const [selectedPdf, setSelectedPdf] = useState<{ title: string; pdfUrl: string; pageCount: number } | null>(null);
 
@@ -22,8 +98,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         lang === 'zh' ? '严格遵循影视视听语言，包含复杂的长镜头与场面调度设计' : 'Strict adherence to cinematic language, including complex long takes and blocking',
       ],
       tags: ['Hand-drawn Storyboard', 'Cinematic Composition', 'Director Notes'],
-      previewImg: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
-      bilibiliBV: 'BV1Z7Gy6QEvQ',
+      draftImg: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
+      finalImg: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=80',
+      bilibiliUrl: 'https://b23.tv/3azZYYO',
+      bilibiliDisplay: 'b23.tv/3azZYYO',
       pdfUrl: '/storyboards/unforgettable-18.pdf',
       pageCount: 16,
     },
@@ -40,8 +118,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         lang === 'zh' ? '多机位组合预演，将叙事节奏精确控制在秒级' : 'Multi-camera pre-visualization controlling narrative pacing precisely',
       ],
       tags: ['Sightline Control', 'Camera Movement', 'Pre-vis'],
-      previewImg: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-      bilibiliBV: 'BV1aX4y1P7vR',
+      draftImg: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+      finalImg: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
+      bilibiliUrl: 'https://b23.tv/jyGfsJR',
+      bilibiliDisplay: 'b23.tv/jyGfsJR',
       pdfUrl: '/storyboards/eyes-on-me.pdf',
       pageCount: 12,
     },
@@ -58,8 +138,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         lang === 'zh' ? '独立攻克与非营利组织的深度外联协议，保障多机位实地取景安全' : 'Secured depth collaboration with welfare organizations for safe multi-cam field shooting',
       ],
       tags: ['Broadcast Tripod', 'Wireless Lavalier Kit', 'Color Calibrated Monitors'],
-      previewImg: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=1200&q=80',
-      bilibiliBV: 'BV11x411c7m9',
+      draftImg: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=80',
+      finalImg: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=1200&q=80',
+      bilibiliUrl: 'https://b23.tv/MzxJiyO',
+      bilibiliDisplay: 'b23.tv/MzxJiyO',
       pdfUrl: '/storyboards/stray-cats.pdf',
       pageCount: 16,
     }
@@ -69,7 +151,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
     <section className="py-16 px-6 max-w-6xl mx-auto">
       {/* 板块标题 */}
       <div className="mb-14 text-center">
-        <span className="text-xs font-mono uppercase tracking-widest text-[#C8523B] bg-[#C8523B]/10 px-3 py-1 rounded-full">
+        <span className="text-xs font-mono uppercase tracking-widest text-[#C8523B] bg-[#C8523B]/10 px-3 py-1 rounded-full border border-[#C8523B]/20">
           {lang === 'zh' ? '核心作品展示' : 'FEATURED WORKS'}
         </span>
         <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#1C1C1C] mt-4 mb-3">
@@ -82,44 +164,37 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         </p>
       </div>
 
-      {/* 3 个作品列表 */}
+      {/* 3个项目 */}
       <div className="space-y-16">
         {projects.map((project) => (
           <div 
             key={project.id}
-            className="bg-white rounded-2xl border border-[#1C1C1C]/10 p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8"
+            className="bg-white rounded-2xl border border-[#1C1C1C]/10 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
           >
-            {/* 左侧预览与操作 */}
+            {/* 左侧可交互对比卡片 */}
             <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
-              <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#222222] border border-[#1C1C1C]/10 group flex items-center justify-center">
-                <img 
-                  src={project.previewImg} 
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    // 图片防裂保护
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '0';
-                  }}
-                />
-                <div className="absolute top-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-white text-[11px] font-mono px-3 py-1 rounded-full z-10">
-                  📖 {project.pageCount} {lang === 'zh' ? '页手绘分镜' : 'Page Storyboard'} · {project.meta}
-                </div>
-              </div>
+              <InteractiveStoryboardCard 
+                draftImg={project.draftImg}
+                finalImg={project.finalImg}
+                title={project.title}
+                pageCount={project.pageCount}
+                meta={project.meta}
+                lang={lang}
+              />
 
-              {/* B站与PDF按钮 */}
+              {/* B站与 PDF 按钮 */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                 <div className="bg-[#1C1C1C]/5 px-3 py-1.5 rounded-lg border border-[#1C1C1C]/10 flex items-center gap-2">
-                  <span className="text-xs font-mono text-[#1C1C1C]/60">Bilibili BV:</span>
-                  <span className="text-xs font-mono font-bold text-[#1C1C1C]">{project.bilibiliBV}</span>
+                  <span className="text-xs font-mono text-[#1C1C1C]/60">Bilibili:</span>
+                  <span className="text-xs font-mono font-bold text-[#1C1C1C]">{project.bilibiliDisplay}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <a
-                    href={`https://www.bilibili.com/video/${project.bilibiliBV}`}
+                    href={project.bilibiliUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 bg-[#00AEEC] text-white rounded-lg text-xs font-medium hover:bg-[#0092c8] transition-all flex items-center gap-1.5 shadow-sm"
+                    className="px-4 py-2 bg-[#00AEEC] text-white rounded-lg text-xs font-medium hover:bg-[#0092c8] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
                   >
                     ▶ {lang === 'zh' ? '在 B 站观看正片' : 'Watch on Bilibili'}
                   </a>
@@ -129,7 +204,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
                       pdfUrl: project.pdfUrl,
                       pageCount: project.pageCount
                     })}
-                    className="px-4 py-2 bg-[#1C1C1C] text-white rounded-lg text-xs font-medium hover:bg-[#C8523B] transition-all flex items-center gap-1.5 shadow-sm"
+                    className="px-4 py-2 bg-[#1C1C1C] text-white rounded-lg text-xs font-medium hover:bg-[#C8523B] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
                   >
                     📖 {lang === 'zh' ? `完整分镜拆解 (${project.pageCount}P)` : `Full Storyboard (${project.pageCount}P)`}
                   </button>
@@ -137,7 +212,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
               </div>
             </div>
 
-            {/* 右侧详细说明 */}
+            {/* 右侧文本描述 */}
             <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
               <div>
                 <span className="text-xs font-mono text-[#C8523B] uppercase tracking-wider">{project.category}</span>
@@ -170,7 +245,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         ))}
       </div>
 
-      {/* PDF 预览弹窗 */}
+      {/* PDF 弹窗 */}
       {selectedPdf && (
         <StoryboardViewerModal
           isOpen={!!selectedPdf}
