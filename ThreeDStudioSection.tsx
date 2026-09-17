@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { ThreeDStoryboardStage } from './ThreeDStoryboardStage';
-import { SKILL_STACK } from '../data/portfolioData';
+import { PERSONAL_INFO } from './portfolioData';
 import { Box, Camera, Layers, Wand2, Compass, Cpu, Film, Sparkles, CheckCircle2 } from 'lucide-react';
 import { BrushUnderline, WashiTape } from './HandDrawnSvg';
 
