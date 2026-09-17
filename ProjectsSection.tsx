@@ -22,8 +22,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         lang === 'zh' ? '严格遵循影视视听语言，包含复杂的长镜头与调度设计' : 'Strict adherence to cinematic language, including complex long takes and blocking',
       ],
       tags: ['Hand-drawn Storyboard', 'Cinematic Composition', 'Director Notes'],
-      // 换用高清且极速稳定的艺术设计图片
-      previewImg: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+      // 极其稳定且契合艺术手绘风格的高清图像
+      previewImg: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
       bilibiliBV: 'BV1Z7Gy6QEvQ',
       pdfUrl: '/storyboards/red-spider-lily.pdf',
       pageCount: 16,
@@ -41,7 +41,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         lang === 'zh' ? '独立攻克与非营利组织的深度外联协议，保障多机位实地取景安全' : 'Secured depth collaboration with welfare organizations for safe multi-cam field shooting',
       ],
       tags: ['Broadcast Tripod', 'Wireless Lavalier Kit', 'Color Calibrated Monitors'],
-      previewImg: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=1200&q=80',
+      // 稳定高质量图片
+      previewImg: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=80',
       bilibiliBV: 'BV1Z7Gy6QEvQ',
       pdfUrl: '/storyboards/stray-cats.pdf',
       pageCount: 16,
@@ -74,14 +75,15 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
           >
             {/* 左侧预览图与操作 */}
             <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
-              <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#1C1C1C]/5 border border-[#1C1C1C]/10 group">
+              <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#222222] border border-[#1C1C1C]/10 group flex items-center justify-center">
                 <img 
                   src={project.previewImg} 
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   onError={(e) => {
-                    // 防裂图处理：如果图片加载失败，自动换成备用美图
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80';
+                    // 如果网络异常导致图片加载不出来，自动转为优雅的暗黑电影风占位背景，不再变成破坏版面的破裂灰框
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
                   }}
                 />
                 <div className="absolute top-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-white text-[11px] font-mono px-3 py-1 rounded-full z-10">
