@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { HeroSection } from './HeroSection';
-import { StoryboardSection } from './StoryboardSection';
+import { ProjectsSection } from './ProjectsSection';
 import { ThreeDStudioSection } from './ThreeDStudioSection';
 import { AwardsSection } from './AwardsSection';
 import { ExperienceTimeline } from './ExperienceTimeline';
@@ -34,7 +34,7 @@ export function App() {
 
           {/* 中央胶囊导航 */}
           <nav className="hidden md:flex items-center bg-[#1C1C1C]/5 p-1 rounded-full border border-[#1C1C1C]/10 text-xs font-medium">
-            <button onClick={() => scrollToSection('storyboard')} className="px-4 py-1.5 rounded-full hover:bg-white hover:shadow-sm transition-all">
+            <button onClick={() => scrollToSection('projects')} className="px-4 py-1.5 rounded-full hover:bg-white hover:shadow-sm transition-all">
               01. 作品分镜
             </button>
             <button onClick={() => scrollToSection('3d-lab')} className="px-4 py-1.5 rounded-full hover:bg-white hover:shadow-sm transition-all">
@@ -70,32 +70,32 @@ export function App() {
       <main className="relative">
         <HeroSection 
           lang={lang} 
-          onExploreProjects={() => scrollToSection('storyboard')}
+          onExploreProjects={() => scrollToSection('projects')}
           onExplore3D={() => scrollToSection('3d-lab')}
         />
 
-        {/* 过场转场 1 */}
+        {/* 电影感转场 1 */}
         <FilmDivider label="01. STORYBOARD & WORKS" />
 
-        <div id="storyboard">
-          <StoryboardSection lang={lang} />
+        <div id="projects">
+          <ProjectsSection lang={lang} />
         </div>
 
-        {/* 过场转场 2 */}
+        {/* 电影感转场 2 */}
         <FilmDivider label="02. 3D PRE-VISUALIZATION" />
 
         <div id="3d-lab">
           <ThreeDStudioSection lang={lang} />
         </div>
 
-        {/* 过场转场 3 */}
+        {/* 电影感转场 3 */}
         <FilmDivider label="03. HONORS & RECOGNITION" />
 
         <div id="awards">
           <AwardsSection lang={lang} />
         </div>
 
-        {/* 过场转场 4 */}
+        {/* 电影感转场 4 */}
         <FilmDivider label="04. BACKGROUND & TIMELINE" />
 
         <div id="experience">
