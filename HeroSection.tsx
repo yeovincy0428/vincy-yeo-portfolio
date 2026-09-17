@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Download, Sparkles } from 'lucide-react';
+import { Download, MapPin } from 'lucide-react';
 import { PERSONAL_INFO } from './portfolioData';
 
 interface HeroSectionProps {
@@ -26,9 +26,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           transition={{ duration: 0.8 }}
           className="space-y-6"
         >
-          {/* 标签栏 */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1C1C1C]/5 border border-[#1C1C1C]/10 text-xs font-mono text-[#1C1C1C]/80">
-            <Sparkles className="w-3.5 h-3.5 text-[#C8523B]" />
+          {/* 地标定位标签栏 */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1C1C1C]/5 border border-[#1C1C1C]/10 text-xs font-mono text-[#1C1C1C]/80">
+            <MapPin className="w-3.5 h-3.5 text-[#C8523B]" />
             <span>{lang === 'zh' ? PERSONAL_INFO.locationZh : PERSONAL_INFO.locationEn}</span>
           </div>
 
