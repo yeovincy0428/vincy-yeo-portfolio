@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Download, Sparkles, Film, Compass, Clapperboard } from 'lucide-react';
+import { Download, Sparkles } from 'lucide-react';
 import { PERSONAL_INFO } from './portfolioData';
 
 interface HeroSectionProps {
@@ -11,11 +11,9 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   lang,
-  onExploreProjects,
-  onExplore3D,
 }) => {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-16 px-6 overflow-hidden bg-[#FAF8F5]">
+    <section className="relative min-h-[85vh] flex items-center justify-center pt-24 pb-16 px-6 overflow-hidden bg-[#FAF8F5]">
       {/* 背景微妙纹理与光晕 */}
       <div className="absolute inset-0 bg-[radial-gradient(#383431_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.03] pointer-events-none" />
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#C8523B]/10 rounded-full blur-3xl pointer-events-none" />
@@ -59,37 +57,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             ))}
           </div>
 
-          {/* 行动转化按钮组 */}
-          <div className="flex flex-wrap items-center gap-4 pt-6">
-            {/* PDF 简历下载按钮 */}
+          {/* 行动转化：单个核心 CTA 按钮 */}
+          <div className="pt-6">
             <a
               href="./resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3.5 bg-[#1C1C1C] text-white rounded-full font-medium text-sm flex items-center gap-2 hover:bg-[#C8523B] transition-all shadow-md hover:shadow-lg active:scale-95"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#1C1C1C] text-white rounded-full font-medium text-sm hover:bg-[#C8523B] transition-all shadow-md hover:shadow-lg active:scale-95"
             >
               <Download className="w-4 h-4" />
               <span>{lang === 'zh' ? '下载个人简历 (PDF)' : 'Download Resume (PDF)'}</span>
             </a>
-
-            {/* 浏览作品按钮 */}
-            <button
-              onClick={onExploreProjects}
-              className="px-6 py-3.5 border-2 border-[#1C1C1C] text-[#1C1C1C] rounded-full font-medium text-sm flex items-center gap-2 hover:bg-[#1C1C1C] hover:text-white transition-all active:scale-95"
-            >
-              <Clapperboard className="w-4 h-4" />
-              <span>{lang === 'zh' ? '浏览分镜与作品集' : 'Explore Storyboards'}</span>
-              <ArrowDown className="w-4 h-4" />
-            </button>
-
-            {/* 3D 预演入口 */}
-            <button
-              onClick={onExplore3D}
-              className="px-5 py-3.5 text-[#1C1C1C]/70 hover:text-[#C8523B] font-medium text-sm flex items-center gap-2 transition-colors"
-            >
-              <Film className="w-4 h-4" />
-              <span>{lang === 'zh' ? '3D 镜头预演实验室' : '3D Pre-vis Lab'}</span>
-            </button>
           </div>
         </motion.div>
       </div>
