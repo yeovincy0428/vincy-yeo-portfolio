@@ -1,5 +1,5 @@
 import React from 'react';
-import { EXPERIENCES, EDUCATION } from '../data/portfolioData';
+import { EXPERIENCES, EDUCATION } from './portfolioData';
 import { Briefcase, GraduationCap, MapPin, Award, Calendar, CheckCircle2 } from 'lucide-react';
 import { WashiTape, StampSeal } from './HandDrawnSvg';
 
