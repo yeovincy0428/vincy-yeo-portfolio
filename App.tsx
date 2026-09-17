@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { ProjectsSection } from './components/ProjectsSection';
-import { ThreeDStudioSection } from './components/ThreeDStudioSection';
-import { AwardsSection } from './components/AwardsSection';
-import { ExperienceTimeline } from './components/ExperienceTimeline';
-import { ContactFooter } from './components/ContactFooter';
-import { ViewfinderCursor } from './components/ViewfinderCursor';
+import { Navbar } from './Navbar';
+import { HeroSection } from './HeroSection';
+import { ProjectsSection } from './ProjectsSection';
+import { ThreeDStudioSection } from './ThreeDStudioSection';
+import { AwardsSection } from './AwardsSection';
+import { ExperienceTimeline } from './ExperienceTimeline';
+import { ContactFooter } from './ContactFooter';
+import { ViewfinderCursor } from './ViewfinderCursor';
 
 export default function App() {
   const [lang, setLang] = useState<'zh' | 'en'>('zh');
