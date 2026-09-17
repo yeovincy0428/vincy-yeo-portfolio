@@ -1,258 +1,394 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { Play, Film, ExternalLink, BookOpen, Check, Filter } from 'lucide-react';
 import { StoryboardViewerModal } from './StoryboardViewerModal';
 
-interface ProjectsSectionProps {
-  lang: 'zh' | 'en';
+// 胶带悬浮装饰 SVG 组件
+const WashiTape: React.FC<{ className?: string; color?: string; angle?: string }> = ({ 
+  className = "w-24 h-6", 
+  color = "#E7DFCF", 
+  angle = "-2.5deg" 
+}) => (
+  <div 
+    className={`${className} opacity-80 shadow-xs pointer-events-none select-none`}
+    style={{ 
+      backgroundColor: color, 
+      transform: `rotate(${angle})`,
+      clipPath: 'polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%, 3% 50%)'
+    }} 
+  />
+);
+
+// 手绘占位插画组件 (如果缺少 HandDrawnSvg 文件可直接在此内联渲染)
+const StoryboardPanelIllustration: React.FC<{ type?: string; title?: string }> = ({ title }) => (
+  <div className="w-full h-full bg-[#FAF6EE] flex flex-col items-center justify-center p-4 text-center border-dashed border-2 border-[#D8C7B0]">
+    <div className="w-12 h-12 rounded-full bg-[#E7DFCF] flex items-center justify-center mb-2 text-[#C8523B]">
+      <Film className="w-6 h-6" />
+    </div>
+    <span className="text-xs font-serif font-bold text-[#383431]">{title || '手绘分镜草稿'}</span>
+    <span className="text-[10px] font-mono text-[#8C8275] mt-1">HAND-DRAWN STORYBOARD</span>
+  </div>
+);
+
+interface ProjectItem {
+  id: string;
+  title: string;
+  titleEn: string;
+  type: string;
+  typeZh: string;
+  year: string;
+  roles: string[];
+  summary: string;
+  highlights: string[];
+  equipment: string[];
+  bilibiliBvid: string;
+  bilibiliUrl: string;
+  storyboardPagesCount: number;
+  cameraSetupsCount: number;
+  awards?: string[];
+  storyboardPreview: Array<{ sceneNo: string; panelDoodleType: string }>;
 }
 
-// 互动组件：左右滑动对比手绘分镜与成品画面
-const InteractiveStoryboardCard: React.FC<{
-  draftImg: string;
-  finalImg: string;
-  title: string;
-  pageCount: number;
-  meta: string;
-  lang: 'zh' | 'en';
-}> = ({ draftImg, finalImg, title, pageCount, meta, lang }) => {
-  const [sliderPos, setSliderPos] = useState(50);
-  const [isHovered, setIsHovered] = useState(false);
+// 默认的项目完整数据集（包含你指定的 Unforgettable 18, Eyes On Me, My Pets Haven）
+const PORTFOLIO_PROJECTS: ProjectItem[] = [
+  {
+    id: 'p1',
+    title: '《Unforgettable 18》手绘电影分镜脚本',
+    titleEn: 'Unforgettable 18 - Storyboard & Film',
+    type: 'Narrative Film',
+    typeZh: '剧情短片',
+    year: '2024',
+    roles: ['导演 / Director', '分镜师 / Storyboard Artist'],
+    summary: '讲述青春叙事短片《Unforgettable 18》。通过高度精细的手绘镜头规划、严谨的轴线控制与光影层次，展现极具戏剧张力的视听语言。',
+    highlights: [
+      '40+ 页高精度手绘画稿，包含完整的动向箭头与镜号标注',
+      '严格遵循影视视听语言，包含复杂的长镜头与场面调度设计'
+    ],
+    equipment: ['Broadcast Tripod', 'Wireless Lavalier', 'Color Monitor'],
+    bilibiliBvid: '3azZYYO',
+    bilibiliUrl: 'https://b23.tv/3azZYYO',
+    storyboardPagesCount: 16,
+    cameraSetupsCount: 32,
+    awards: ['入围第18届青年影像节最佳镜头设计', '最佳手绘分镜创作奖'],
+    storyboardPreview: [
+      { sceneNo: 'SCENE 01', panelDoodleType: 'condo' },
+      { sceneNo: 'SCENE 02', panelDoodleType: 'street' },
+      { sceneNo: 'SCENE 03', panelDoodleType: 'close-up' }
+    ]
+  },
+  {
+    id: 'p2',
+    title: '《Eyes On Me》视听语言与镜头调度',
+    titleEn: 'Eyes On Me - Camera Blocking',
+    type: 'Animation & VFX',
+    typeZh: '视觉短片',
+    year: '2024',
+    roles: ['分镜总监', '预演师'],
+    summary: '围绕视线引导与空间张力展开的短片分镜。精细计算镜头焦段与人物走位，打造强烈的视觉沉浸感。',
+    highlights: [
+      '精准的视线轴线切分与镜头匹配，引导观众情绪起伏',
+      '多机位组合预演，将叙事节奏精确控制在秒级'
+    ],
+    equipment: ['3D Pre-vis Engine', 'Focal Length Calculator'],
+    bilibiliBvid: 'jyGfsJR',
+    bilibiliUrl: 'https://b23.tv/jyGfsJR',
+    storyboardPagesCount: 12,
+    cameraSetupsCount: 24,
+    storyboardPreview: [
+      { sceneNo: 'SCENE 01', panelDoodleType: 'street' },
+      { sceneNo: 'SCENE 02', panelDoodleType: 'condo' }
+    ]
+  },
+  {
+    id: 'p3',
+    title: '《My Pets Haven》公益纪录短片分镜',
+    titleEn: 'My Pets Haven - Public Welfare Storyboard',
+    type: 'Documentary',
+    typeZh: '公益纪录片',
+    year: '2023',
+    roles: ['联合导演', '独立摄影'],
+    summary: '聚焦城市流浪动物生存现状。采用低视角关照镜头与温情旁白呼吁领养代替购买，兼具纪实感与艺术美感。',
+    highlights: [
+      '低角度追踪萌宠视角，融合温情旁白呼吁公众领养代替购买',
+      '独立攻克与非营利组织的深度外联协议，保障多机位实地取景安全'
+    ],
+    equipment: ['Cinema Rig', 'Low-Angle Gimbal'],
+    bilibiliBvid: 'MzxJiyO',
+    bilibiliUrl: 'https://b23.tv/MzxJiyO',
+    storyboardPagesCount: 16,
+    cameraSetupsCount: 20,
+    storyboardPreview: [
+      { sceneNo: 'SCENE 01', panelDoodleType: 'close-up' }
+    ]
+  }
+];
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-    const percent = (x / rect.width) * 100;
-    setSliderPos(percent);
-  };
+// 单个带视差与手绘风纸质质感的卡片组件
+const ParallaxProjectCard: React.FC<{
+  project: ProjectItem;
+  idx: number;
+  lang: 'zh' | 'en';
+  onInspect: (p: ProjectItem) => void;
+  onCopyBvid: (bvid: string, e: React.MouseEvent) => void;
+  copiedBvid: string | null;
+}> = ({ project, idx, lang, onInspect, onCopyBvid, copiedBvid }) => {
+  const cardRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['start end', 'end start']
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 90, damping: 20 });
+  const yArtwork = useTransform(smoothProgress, [0, 1], [25, -25]);
+  const yDetails = useTransform(smoothProgress, [0, 1], [-15, 15]);
+  const yTape = useTransform(smoothProgress, [0, 1], [-10, 20]);
+  const cardScale = useTransform(smoothProgress, [0, 0.5, 1], [0.98, 1, 0.98]);
 
   return (
-    <div 
-      className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#1C1C1C] border border-[#1C1C1C]/15 group cursor-ew-resize select-none shadow-md"
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setSliderPos(50);
-      }}
+    <motion.article
+      ref={cardRef}
+      style={{ scale: cardScale }}
+      className="bg-white rounded-3xl border-2 border-[#383431] p-6 md:p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group"
     >
-      {/* 底层：最终渲染/正片画面 */}
-      <img 
-        src={finalImg} 
-        alt={`${title} Final`}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-      />
-
-      {/* 上层：手绘分镜草稿 (受滑块控制显示宽度) */}
-      <div 
-        className="absolute inset-0 overflow-hidden"
-        style={{ width: `${sliderPos}%` }}
-      >
-        <img 
-          src={draftImg} 
-          alt={`${title} Draft`}
-          className="absolute inset-0 w-full h-full object-cover max-w-none transition-transform duration-700 ease-out group-hover:scale-105 filter grayscale contrast-125 brightness-95"
-          style={{ width: '100%', height: '100%' }}
+      {/* 胶带悬浮装饰 */}
+      <motion.div style={{ y: yTape }} className="absolute top-4 right-6 hidden sm:block z-10">
+        <WashiTape
+          className="w-24 h-6"
+          color={idx % 2 === 0 ? '#E7DFCF' : '#E8D4BB'}
+          angle={idx % 2 === 0 ? '-2.5deg' : '3deg'}
         />
-        <span className="absolute bottom-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-[#FAF8F5] text-[10px] font-mono px-2 py-0.5 rounded uppercase tracking-widest border border-white/10">
-          STORYBOARD DRAFT
-        </span>
-      </div>
+      </motion.div>
 
-      {/* 拖拽对比线 */}
-      <div 
-        className="absolute top-0 bottom-0 w-[2px] bg-[#C8523B] shadow-[0_0_10px_rgba(200,82,59,0.8)] z-20 pointer-events-none"
-        style={{ left: `${sliderPos}%` }}
-      >
-        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 bg-[#FAF8F5] border-2 border-[#C8523B] rounded-full flex items-center justify-center shadow-lg text-[10px] font-bold text-[#1C1C1C]">
-          ↔
-        </div>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-1">
+        {/* 左侧：手绘舞台与 B站入口 */}
+        <motion.div style={{ y: yArtwork }} className="lg:col-span-6 flex flex-col space-y-4">
+          <div className="relative aspect-[16/10] w-full rounded-2xl border-2 border-[#383431] overflow-hidden bg-[#FAF8F3] shadow-sm group-hover:border-[#C8523B] transition-colors">
+            <StoryboardPanelIllustration
+              type={project.storyboardPreview[0]?.panelDoodleType || 'condo'}
+              title={project.title}
+            />
 
-      {/* 顶部标签 */}
-      <div className="absolute top-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-white text-[11px] font-mono px-3 py-1 rounded-full z-10 border border-white/10 flex items-center gap-1.5 shadow-sm">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#C8523B] animate-pulse" />
-        <span>📖 {pageCount} {lang === 'zh' ? '页分镜' : 'P Storyboard'} · {meta}</span>
-      </div>
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#2B2724]/90 text-white px-2.5 py-1 rounded-md text-xs font-mono font-semibold">
+              <Film className="w-3.5 h-3.5 text-[#D49A3D]" />
+              <span>{project.typeZh} · {project.year}</span>
+            </div>
 
-      {/* 交互提示 */}
-      <div className={`absolute bottom-3 right-3 bg-[#1C1C1C]/90 backdrop-blur-md text-white/90 text-[10px] font-mono px-3 py-1 rounded-full z-10 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-70'}`}>
-        {lang === 'zh' ? '👈 左右滑动对比手绘/镜头 👉' : '👈 Hover to compare Draft vs Final 👉'}
+            <div className="absolute bottom-3 left-3 bg-[#FAF6EE]/95 border border-[#383431] text-[#2B2724] px-2.5 py-1 rounded-md text-xs font-mono font-bold flex items-center gap-1 shadow-xs">
+              <BookOpen className="w-3.5 h-3.5 text-[#C8523B]" />
+              <span>{project.storyboardPagesCount} 页手绘分镜 · {project.cameraSetupsCount} 机位规划</span>
+            </div>
+
+            <button
+              onClick={() => onInspect(project)}
+              className="absolute inset-0 bg-[#2B2724]/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm backdrop-blur-[2px] cursor-pointer"
+            >
+              <BookOpen className="w-5 h-5 text-[#D49A3D]" />
+              <span>点击展开高精度分镜剖析 (Inspect Storyboard)</span>
+            </button>
+          </div>
+
+          {/* 缩略图栏 */}
+          {project.storyboardPreview.length > 1 && (
+            <div className="grid grid-cols-3 gap-2">
+              {project.storyboardPreview.slice(0, 3).map((panel, pIdx) => (
+                <div
+                  key={pIdx}
+                  onClick={() => onInspect(project)}
+                  className="aspect-[16/10] rounded-xl border border-[#383431]/40 overflow-hidden cursor-pointer hover:border-[#C8523B] transition-all hover:-translate-y-0.5"
+                  title="点击查看此镜头"
+                >
+                  <StoryboardPanelIllustration type={panel.panelDoodleType} title={panel.sceneNo} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* B 站直接观看栏 */}
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF6EE] border border-[#383431]/30">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold text-[#8C8275]">Bilibili BV:</span>
+              <button
+                onClick={(e) => onCopyBvid(project.bilibiliBvid, e)}
+                className="text-xs font-mono font-bold text-[#1C1917] bg-white px-2 py-0.5 rounded border border-[#D4C9BA] hover:bg-[#F2ECE1] transition-colors flex items-center gap-1 cursor-pointer"
+                title="点击复制链接"
+              >
+                <span>{project.bilibiliBvid}</span>
+                {copiedBvid === project.bilibiliBvid ? <Check className="w-3 h-3 text-emerald-600" /> : null}
+              </button>
+            </div>
+
+            <a
+              href={project.bilibiliUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold font-mono px-3 py-1.5 rounded-lg bg-[#00A1D6] text-white hover:bg-[#008BB9] transition-colors shadow-xs"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>{lang === 'zh' ? '在 B 站观看正片' : 'Watch on Bilibili'}</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </motion.div>
+
+        {/* 右侧：详细文字说明 */}
+        <motion.div style={{ y: yDetails }} className="lg:col-span-6 flex flex-col justify-between space-y-5">
+          <div>
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {project.roles.map((role, rIdx) => (
+                <span key={rIdx} className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-[#FAF0E1] border border-[#D8C7B0] text-[#5A452B]">
+                  {role}
+                </span>
+              ))}
+            </div>
+
+            <h3 className="text-2xl md:text-3xl font-bold font-serif text-[#1C1917] tracking-tight group-hover:text-[#C8523B] transition-colors">
+              {project.title}
+            </h3>
+            <div className="text-sm font-serif italic text-[#787063] mt-0.5">{project.titleEn}</div>
+
+            {project.awards && project.awards.length > 0 && (
+              <div className="mt-3 bg-[#FAF3E0] border-l-4 border-[#D49A3D] p-3 rounded-r-xl space-y-1">
+                {project.awards.map((award, aIdx) => (
+                  <div key={aIdx} className="text-xs font-mono font-bold text-[#8C6418] flex items-center gap-1.5">
+                    <span className="text-[#C8523B]">★</span>
+                    <span>{award}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <p className="mt-4 text-sm md:text-base leading-relaxed text-[#44403C]">{project.summary}</p>
+
+            <div className="mt-4 space-y-2">
+              <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#8C8275]">
+                {lang === 'zh' ? '核心视听与镜头工程亮点:' : 'Key Visual & Production Highlights:'}
+              </div>
+              <ul className="space-y-1.5 text-xs md:text-sm text-[#44403C]">
+                {project.highlights.map((hl, hIdx) => (
+                  <li key={hIdx} className="flex items-start gap-2">
+                    <span className="text-[#C8523B] font-bold mt-0.5">▪</span>
+                    <span>{hl}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-[#EAE3D5] flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-1">
+              {project.equipment.slice(0, 3).map((eq, eIdx) => (
+                <span key={eIdx} className="text-[11px] font-mono text-[#787063] bg-[#FAF6EE] px-2 py-0.5 rounded border border-[#E0D7C6]">
+                  {eq}
+                </span>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onInspect(project)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-mono bg-[#2E2B28] text-white hover:bg-[#C8523B] transition-colors shadow-sm cursor-pointer"
+            >
+              <BookOpen className="w-4 h-4 text-[#D49A3D]" />
+              <span>{lang === 'zh' ? '完整分镜拆解' : 'Storyboard Breakdown'}</span>
+              <span className="text-white/60">({project.storyboardPagesCount}P)</span>
+            </button>
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.article>
   );
 };
 
-export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
-  const [selectedPdf, setSelectedPdf] = useState<{ title: string; pdfUrl: string; pageCount: number } | null>(null);
+export const ProjectsSection: React.FC<{ lang?: 'zh' | 'en' }> = ({ lang = 'zh' }) => {
+  const [filter, setFilter] = useState<'all' | 'Narrative Film' | 'Animation & VFX' | 'Documentary'>('all');
+  const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
+  const [copiedBvid, setCopiedBvid] = useState<string | null>(null);
 
-  const projects = [
-    {
-      id: 'p1',
-      title: lang === 'zh' ? '《Unforgettable 18》手绘电影分镜脚本' : 'Unforgettable 18 - Film Storyboard',
-      category: lang === 'zh' ? '剧情短片 · 手绘分镜' : 'Drama Short • Hand-drawn',
-      meta: '40 PAGES • 85 SCENES',
-      desc: lang === 'zh' 
-        ? '讲述青春叙事短片《Unforgettable 18》。通过高度精细的手绘镜头规划、严谨的轴线控制与光影层次，展现极具戏剧张力的视听语言。'
-        : 'A narrative short film capturing youth and memory. Demonstrates dramatic visual storytelling through precise hand-drawn camera blocking, line-of-action control, and lighting design.',
-      highlights: [
-        lang === 'zh' ? '40+ 页高精度手绘画稿，包含完整的动向箭头与镜号标注' : '40+ pages of high-precision drawings with motion arrows and shot numbers',
-        lang === 'zh' ? '严格遵循影视视听语言，包含复杂的长镜头与场面调度设计' : 'Strict adherence to cinematic language, including complex long takes and blocking',
-      ],
-      tags: ['Hand-drawn Storyboard', 'Cinematic Composition', 'Director Notes'],
-      draftImg: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
-      finalImg: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=80',
-      bilibiliUrl: 'https://b23.tv/3azZYYO',
-      bilibiliDisplay: 'b23.tv/3azZYYO',
-      pdfUrl: '/storyboards/unforgettable-18.pdf',
-      pageCount: 16,
-    },
-    {
-      id: 'p2',
-      title: lang === 'zh' ? '《Eyes On Me》视听语言与镜头调度' : 'Eyes On Me - Storyboard & Blocking',
-      category: lang === 'zh' ? '视觉短片 · 轴线调度' : 'Visual Short • Camera Blocking',
-      meta: '24 PAGES • 48 SCENES',
-      desc: lang === 'zh'
-        ? '围绕视线引导与空间张力展开的短片分镜。精细计算镜头焦段与人物走位，打造强烈的视觉沉浸感。'
-        : 'Focuses on gaze direction and spatial tension. Meticulously planned lens focal lengths and actor positioning to create strong visual immersion.',
-      highlights: [
-        lang === 'zh' ? '精准的视线轴线切分与镜头匹配，引导观众情绪起伏' : 'Precise line-of-action cuts and match shots guiding emotional rhythm',
-        lang === 'zh' ? '多机位组合预演，将叙事节奏精确控制在秒级' : 'Multi-camera pre-visualization controlling narrative pacing precisely',
-      ],
-      tags: ['Sightline Control', 'Camera Movement', 'Pre-vis'],
-      draftImg: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
-      finalImg: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
-      bilibiliUrl: 'https://b23.tv/jyGfsJR',
-      bilibiliDisplay: 'b23.tv/jyGfsJR',
-      pdfUrl: '/storyboards/eyes-on-me.pdf',
-      pageCount: 12,
-    },
-    {
-      id: 'p3',
-      title: lang === 'zh' ? '《My Pets Haven》公益纪录短片分镜' : 'My Pets Haven - Public Welfare Storyboard',
-      category: lang === 'zh' ? '公益纪录短片 · 视听语言' : 'Public Welfare • Shot Design',
-      meta: '16 PAGES • 32 SCENES',
-      desc: lang === 'zh'
-        ? '聚焦城市流浪动物生存现状。采用低视角关照镜头与温情旁白呼吁领养代替购买，兼具纪实感与艺术美感。'
-        : 'Focuses on urban stray animals. Utilizes low-angle perspective and warm narration to advocate adoption, blending documentary realism with artistic expressiveness.',
-      highlights: [
-        lang === 'zh' ? '低角度追踪萌宠视角，融合温情旁白呼吁公众领养代替购买' : 'Low-angle tracking shot design emphasizing emotional connection and animal perspective',
-        lang === 'zh' ? '独立攻克与非营利组织的深度外联协议，保障多机位实地取景安全' : 'Secured depth collaboration with welfare organizations for safe multi-cam field shooting',
-      ],
-      tags: ['Broadcast Tripod', 'Wireless Lavalier Kit', 'Color Calibrated Monitors'],
-      draftImg: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&q=80',
-      finalImg: 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=1200&q=80',
-      bilibiliUrl: 'https://b23.tv/MzxJiyO',
-      bilibiliDisplay: 'b23.tv/MzxJiyO',
-      pdfUrl: '/storyboards/stray-cats.pdf',
-      pageCount: 16,
-    }
-  ];
+  const filteredProjects = PORTFOLIO_PROJECTS.filter(p => filter === 'all' || p.type === filter);
+
+  const handleCopyBvid = (bvid: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(bvid);
+    setCopiedBvid(bvid);
+    setTimeout(() => setCopiedBvid(null), 2000);
+  };
 
   return (
-    <section className="py-16 px-6 max-w-6xl mx-auto">
-      {/* 板块标题 */}
-      <div className="mb-14 text-center">
-        <span className="text-xs font-mono uppercase tracking-widest text-[#C8523B] bg-[#C8523B]/10 px-3 py-1 rounded-full border border-[#C8523B]/20">
-          {lang === 'zh' ? '核心作品展示' : 'FEATURED WORKS'}
-        </span>
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#1C1C1C] mt-4 mb-3">
-          {lang === 'zh' ? '故事板与分镜设计' : 'Storyboards & Shot Design'}
-        </h2>
-        <p className="text-sm text-[#1C1C1C]/70 max-w-2xl mx-auto">
-          {lang === 'zh'
-            ? '从纸上手绘到镜头调度，精准呈现视觉节奏与导演意图。'
-            : 'From hand-drawn sketches to camera blocking, accurately translating director vision into visual rhythm.'}
-        </p>
-      </div>
-
-      {/* 3个项目 */}
-      <div className="space-y-16">
-        {projects.map((project) => (
-          <div 
-            key={project.id}
-            className="bg-white rounded-2xl border border-[#1C1C1C]/10 p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
-          >
-            {/* 左侧可交互对比卡片 */}
-            <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
-              <InteractiveStoryboardCard 
-                draftImg={project.draftImg}
-                finalImg={project.finalImg}
-                title={project.title}
-                pageCount={project.pageCount}
-                meta={project.meta}
-                lang={lang}
-              />
-
-              {/* B站与 PDF 按钮 */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                <div className="bg-[#1C1C1C]/5 px-3 py-1.5 rounded-lg border border-[#1C1C1C]/10 flex items-center gap-2">
-                  <span className="text-xs font-mono text-[#1C1C1C]/60">Bilibili:</span>
-                  <span className="text-xs font-mono font-bold text-[#1C1C1C]">{project.bilibiliDisplay}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <a
-                    href={project.bilibiliUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-[#00AEEC] text-white rounded-lg text-xs font-medium hover:bg-[#0092c8] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
-                  >
-                    ▶ {lang === 'zh' ? '在 B 站观看正片' : 'Watch on Bilibili'}
-                  </a>
-                  <button
-                    onClick={() => setSelectedPdf({
-                      title: project.title,
-                      pdfUrl: project.pdfUrl,
-                      pageCount: project.pageCount
-                    })}
-                    className="px-4 py-2 bg-[#1C1C1C] text-white rounded-lg text-xs font-medium hover:bg-[#C8523B] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
-                  >
-                    📖 {lang === 'zh' ? `完整分镜拆解 (${project.pageCount}P)` : `Full Storyboard (${project.pageCount}P)`}
-                  </button>
-                </div>
-              </div>
+    <section id="projects" className="relative py-16 md:py-24 border-b-2 border-[#383431] bg-[#F9F6F0]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#383431] bg-white text-xs font-mono font-bold uppercase tracking-wider text-[#C8523B] mb-3 shadow-xs">
+              <Film className="w-3.5 h-3.5 text-[#C8523B]" />
+              <span>{lang === 'zh' ? '实拍与分镜代表作' : 'Featured Film & Storyboard Works'}</span>
             </div>
-
-            {/* 右侧文本描述 */}
-            <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
-              <div>
-                <span className="text-xs font-mono text-[#C8523B] uppercase tracking-wider">{project.category}</span>
-                <h3 className="text-2xl font-serif font-bold text-[#1C1C1C] mt-1 mb-3">{project.title}</h3>
-                <p className="text-xs md:text-sm text-[#1C1C1C]/80 leading-relaxed mb-4">{project.desc}</p>
-
-                <div className="space-y-2 mb-6">
-                  <h4 className="text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">{lang === 'zh' ? '核心视听与镜头亮点：' : 'Key Highlights:'}</h4>
-                  <ul className="space-y-1.5">
-                    {project.highlights.map((h, i) => (
-                      <li key={i} className="text-xs text-[#1C1C1C]/70 flex items-start gap-2">
-                        <span className="text-[#C8523B] font-bold">▪</span>
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* 标签 */}
-              <div className="flex flex-wrap gap-2 pt-2 border-t border-[#1C1C1C]/10">
-                {project.tags.map((tag, i) => (
-                  <span key={i} className="px-2.5 py-1 bg-[#1C1C1C]/5 rounded-md text-[11px] font-mono text-[#1C1C1C]/70 border border-[#1C1C1C]/10">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <h2 className="text-3xl md:text-5xl font-bold font-serif text-[#1C1917] tracking-tight">
+              {lang === 'zh' ? '作品集与手绘分镜工程' : 'Portfolio & Storyboard Projects'}
+            </h2>
+            <p className="mt-2 text-base text-[#57534E] max-w-2xl">
+              {lang === 'zh'
+                ? '每一个镜头都经历 40+ 页现场分镜、3D 镜头预演与光影蓝图推敲。点击作品可直接跳转 B 站观看或展开深度分镜拆解。'
+                : 'Each project is backed by comprehensive storyboard pages, 3D camera pre-visualization, and lighting schematics.'}
+            </p>
           </div>
-        ))}
+
+          {/* 分类筛选器 */}
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { id: 'all', labelZh: `全部类型 (${PORTFOLIO_PROJECTS.length})`, labelEn: `All Types (${PORTFOLIO_PROJECTS.length})` },
+              { id: 'Narrative Film', labelZh: '剧情短片', labelEn: 'Narrative Film' },
+              { id: 'Animation & VFX', labelZh: '动画与合成', labelEn: 'Animation & VFX' },
+              { id: 'Documentary', labelZh: '纪录片', labelEn: 'Documentary' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setFilter(tab.id as any)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
+                  filter === tab.id
+                    ? 'bg-[#2E2B28] text-white border-[#2E2B28] shadow-sm'
+                    : 'bg-white text-[#57534E] border-[#D4C9BA] hover:bg-[#F2ECE1] hover:text-[#1C1917]'
+                }`}
+              >
+                {lang === 'zh' ? tab.labelZh : tab.labelEn}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 卡片列表 */}
+        <div className="space-y-12">
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project, idx) => (
+              <ParallaxProjectCard
+                key={project.id}
+                project={project}
+                idx={idx}
+                lang={lang}
+                onInspect={setActiveModalProject}
+                onCopyBvid={handleCopyBvid}
+                copiedBvid={copiedBvid}
+              />
+            ))
+          ) : (
+            <div className="bg-white rounded-2xl border-2 border-[#383431] p-12 text-center my-8">
+              <div className="w-12 h-12 rounded-full bg-[#FAF6EE] text-[#C8523B] mx-auto flex items-center justify-center mb-3">
+                <Filter className="w-6 h-6" />
+              </div>
+              <p className="text-base font-serif text-[#1C1C10]">暂无匹配作品</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* PDF 弹窗 */}
-      {selectedPdf && (
+      {/* PDF / 分镜预览弹窗 (包含基础兜底) */}
+      {activeModalProject && (
         <StoryboardViewerModal
-          isOpen={!!selectedPdf}
-          onClose={() => setSelectedPdf(null)}
-          title={selectedPdf.title}
-          pdfUrl={selectedPdf.pdfUrl}
-          pageCount={selectedPdf.pageCount}
+          isOpen={!!activeModalProject}
+          onClose={() => setActiveModalProject(null)}
+          title={activeModalProject.title}
+          pdfUrl={`/storyboards/${activeModalProject.id}.pdf`}
+          pageCount={activeModalProject.storyboardPagesCount}
           lang={lang}
         />
       )}
