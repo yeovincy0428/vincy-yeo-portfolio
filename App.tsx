@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
+import { Navbar } from './Navbar';
 import { HeroSection } from './HeroSection';
 import { ProjectsSection } from './ProjectsSection';
 import { ThreeDStudioSection } from './ThreeDStudioSection';
 import { AwardsSection } from './AwardsSection';
 import { ExperienceTimeline } from './ExperienceTimeline';
 import { ContactFooter } from './ContactFooter';
+import { ViewfinderCursor } from './ViewfinderCursor';
 import { FilmDivider } from './src/components/FilmDivider';
 
 export function App() {
-  const [lang, setLang] = useState<'zh' | 'en'>('zh');
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+@@ -19,83 +21,46 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C1C1C] font-sans selection:bg-[#C8523B] selection:text-white">
@@ -31,6 +26,8 @@ export function App() {
               <p className="text-[10px] text-[#C8523B] font-mono tracking-wider">3D CREATOR & DIRECTOR</p>
             </div>
           </div>
+      {/* 电影取景框鼠标特效 */}
+      <ViewfinderCursor />
 
           {/* 中央胶囊导航 */}
           <nav className="hidden md:flex items-center bg-[#1C1C1C]/5 p-1 rounded-full border border-[#1C1C1C]/10 text-xs font-medium">
@@ -65,9 +62,16 @@ export function App() {
           </div>
         </div>
       </header>
+      {/* 原版顶部导航栏 */}
+      <Navbar 
+        lang={lang} 
+        onToggleLang={() => setLang(lang === 'zh' ? 'en' : 'zh')} 
+        onNavigate={scrollToSection} 
+      />
 
       {/* 主体内容 */}
       <main className="relative">
+      <main className="relative pt-16">
         <HeroSection 
           lang={lang} 
           onExploreProjects={() => scrollToSection('projects')}
@@ -75,6 +79,7 @@ export function App() {
         />
 
         {/* 电影感转场 1 */}
+        {/* 电影感过场 1 */}
         <FilmDivider label="01. STORYBOARD & WORKS" />
 
         <div id="projects">
@@ -82,6 +87,7 @@ export function App() {
         </div>
 
         {/* 电影感转场 2 */}
+        {/* 电影感过场 2 */}
         <FilmDivider label="02. 3D PRE-VISUALIZATION" />
 
         <div id="3d-lab">
@@ -89,6 +95,7 @@ export function App() {
         </div>
 
         {/* 电影感转场 3 */}
+        {/* 电影感过场 3 */}
         <FilmDivider label="03. HONORS & RECOGNITION" />
 
         <div id="awards">
@@ -96,19 +103,7 @@ export function App() {
         </div>
 
         {/* 电影感转场 4 */}
+        {/* 电影感过场 4 */}
         <FilmDivider label="04. BACKGROUND & TIMELINE" />
 
         <div id="experience">
-          <ExperienceTimeline lang={lang} />
-        </div>
-      </main>
-
-      {/* 页脚与联系 */}
-      <div id="contact">
-        <ContactFooter lang={lang} />
-      </div>
-    </div>
-  );
-}
-
-export default App;
