@@ -5,7 +5,11 @@ import { StoryboardPanelIllustration, WashiTape } from './HandDrawnSvg';
 import { StoryboardViewerModal } from './StoryboardViewerModal';
 import { ProjectItem } from '../types';
 
-// 项目数据配置（针对方案一：直接对齐 public 根目录下的 PDF 文件）
+// 获取动态 Base 路径，完美兼容 GitHub Pages 的二级域名路径
+const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
 const PROJECTS_DATA: ProjectItem[] = [
   {
     id: 'p1',
@@ -26,7 +30,7 @@ const PROJECTS_DATA: ProjectItem[] = [
     hasStoryboard: true,
     storyboardPagesCount: 16,
     cameraSetupsCount: 32,
-    pdfUrl: './unforgettable-18.pdf', // 直连 public/unforgettable-18.pdf
+    pdfUrl: `${baseUrl}unforgettable-18.pdf`,
     awards: ['Winner - Best Malaysian Short Film (Nitiin 2022)', 'Winner - Best Poster'],
     panelDoodleType: 'condo'
   },
@@ -49,7 +53,7 @@ const PROJECTS_DATA: ProjectItem[] = [
     hasStoryboard: true,
     storyboardPagesCount: 6,
     cameraSetupsCount: 24,
-    pdfUrl: './im-on-my-way.pdf', // 直连 public/im-on-my-way.pdf
+    pdfUrl: `${baseUrl}im-on-my-way.pdf`,
     panelDoodleType: 'im-on-my-way'
   },
   {
@@ -166,7 +170,7 @@ const ParallaxProjectCard: React.FC<{
           </div>
         </motion.div>
 
-        {/* 右侧信息 */}
+        {/* 右侧细节 */}
         <motion.div style={{ y: yDetails }} className="lg:col-span-6 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex flex-wrap gap-1.5 mb-3">
