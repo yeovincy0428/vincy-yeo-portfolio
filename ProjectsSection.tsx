@@ -3,28 +3,9 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Play, Film, ExternalLink, BookOpen, Check } from 'lucide-react';
 import { StoryboardPanelIllustration, WashiTape } from './HandDrawnSvg';
 import { StoryboardViewerModal } from './StoryboardViewerModal';
+import { ProjectItem } from '../types';
 
-interface ProjectItem {
-  id: string;
-  title: string;
-  titleEn: string;
-  type: string;
-  typeZh: string;
-  year: string;
-  roles: string[];
-  summary: string;
-  highlights: string[];
-  equipment: string[];
-  bilibiliBvid: string;
-  bilibiliUrl: string;
-  storyboardPagesCount?: number;
-  cameraSetupsCount?: number;
-  hasStoryboard: boolean; // 是否拥有故事板拆解
-  pdfUrl?: string;
-  awards?: string[];
-  panelDoodleType: string;
-}
-
+// 项目数据配置（针对方案一：直接对齐 public 根目录下的 PDF 文件）
 const PROJECTS_DATA: ProjectItem[] = [
   {
     id: 'p1',
@@ -45,9 +26,9 @@ const PROJECTS_DATA: ProjectItem[] = [
     hasStoryboard: true,
     storyboardPagesCount: 16,
     cameraSetupsCount: 32,
-    pdfUrl: '/storyboards/unforgettable-18.pdf',
+    pdfUrl: './unforgettable-18.pdf', // 直连 public/unforgettable-18.pdf
     awards: ['Winner - Best Malaysian Short Film (Nitiin 2022)', 'Winner - Best Poster'],
-    panelDoodleType: 'condo' // 保留你原本喜欢的手绘高楼封面
+    panelDoodleType: 'condo'
   },
   {
     id: 'p2',
@@ -68,8 +49,8 @@ const PROJECTS_DATA: ProjectItem[] = [
     hasStoryboard: true,
     storyboardPagesCount: 6,
     cameraSetupsCount: 24,
-    pdfUrl: '/storyboards/im-on-my-way.pdf',
-    panelDoodleType: 'im-on-my-way' // 风格色调统一的新生成手绘线稿封面
+    pdfUrl: './im-on-my-way.pdf', // 直连 public/im-on-my-way.pdf
+    panelDoodleType: 'im-on-my-way'
   },
   {
     id: 'p3',
@@ -87,8 +68,8 @@ const PROJECTS_DATA: ProjectItem[] = [
     equipment: ['Cinema Rig', 'Low-Angle Gimbal'],
     bilibiliBvid: 'MzxJiyO',
     bilibiliUrl: 'https://b23.tv/MzxJiyO',
-    hasStoryboard: false, // 明确标注没有故事板，不显示PDF拆解按钮
-    panelDoodleType: 'pets-haven' // 风格色调统一的新生成手绘线稿封面
+    hasStoryboard: false,
+    panelDoodleType: 'pets-haven'
   }
 ];
 
@@ -127,7 +108,7 @@ const ParallaxProjectCard: React.FC<{
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-1">
-        {/* 左侧：手绘风封面插画 */}
+        {/* 左侧封面 */}
         <motion.div style={{ y: yArtwork }} className="lg:col-span-6 flex flex-col space-y-4">
           <div className="relative aspect-[16/10] w-full rounded-2xl border-2 border-[#383431] overflow-hidden bg-[#FAF8F3] shadow-sm group-hover:border-[#C8523B] transition-colors">
             <StoryboardPanelIllustration
@@ -149,6 +130,7 @@ const ParallaxProjectCard: React.FC<{
 
             {project.hasStoryboard && (
               <button
+                type="button"
                 onClick={() => onInspect(project)}
                 className="absolute inset-0 bg-[#2B2724]/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm backdrop-blur-[2px] cursor-pointer"
               >
@@ -162,6 +144,7 @@ const ParallaxProjectCard: React.FC<{
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold text-[#8C8275]">Bilibili BV:</span>
               <button
+                type="button"
                 onClick={(e) => onCopyBvid(project.bilibiliBvid, e)}
                 className="text-xs font-mono font-bold text-[#1C1917] bg-white px-2 py-0.5 rounded border border-[#D4C9BA] hover:bg-[#F2ECE1] transition-colors flex items-center gap-1 cursor-pointer"
               >
@@ -183,7 +166,7 @@ const ParallaxProjectCard: React.FC<{
           </div>
         </motion.div>
 
-        {/* 右侧：文字信息与按钮 */}
+        {/* 右侧信息 */}
         <motion.div style={{ y: yDetails }} className="lg:col-span-6 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex flex-wrap gap-1.5 mb-3">
@@ -236,12 +219,11 @@ const ParallaxProjectCard: React.FC<{
               ))}
             </div>
 
-            {/* 如果项目有故事板，才显示拆解按钮 */}
             {project.hasStoryboard ? (
               <button
                 type="button"
                 onClick={() => onInspect(project)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-mono bg-[#2E2B28] text-white hover:bg-[#C8523B] transition-colors shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-mono bg-[#2E2B28] text-white hover:bg-[#C8523B] transition-colors shadow-sm cursor-pointer active:scale-95"
               >
                 <BookOpen className="w-4 h-4 text-[#D49A3D]" />
                 <span>{lang === 'zh' ? '完整分镜拆解' : 'Storyboard Breakdown'}</span>
@@ -327,11 +309,8 @@ export const ProjectsSection: React.FC<{ lang?: 'zh' | 'en' }> = ({ lang = 'zh' 
 
       {activeModalProject && (
         <StoryboardViewerModal
-          isOpen={!!activeModalProject}
+          project={activeModalProject}
           onClose={() => setActiveModalProject(null)}
-          title={activeModalProject.title}
-          pdfUrl={activeModalProject.pdfUrl || ''}
-          pageCount={activeModalProject.storyboardPagesCount || 1}
           lang={lang}
         />
       )}
