@@ -6,7 +6,7 @@ import ThreeDStudioSection from './ThreeDStudioSection';
 import AwardsSection from './AwardsSection';
 import ExperienceTimeline from './ExperienceTimeline';
 import ContactFooter from './ContactFooter';
-import ViewfinderCursor from './ViewfinderCursor';
+import { ViewfinderCursor } from './ViewfinderCursor';
 
 export default function App() {
   const [lang, setLang] = useState<'zh' | 'en'>('zh');
