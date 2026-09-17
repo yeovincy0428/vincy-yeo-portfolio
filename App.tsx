@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from './Navbar';
-import HeroSection from './HeroSection';
-import ProjectsSection from './ProjectsSection';
-import ThreeDStudioSection from './ThreeDStudioSection';
-import AwardsSection from './AwardsSection';
-import ExperienceTimeline from './ExperienceTimeline';
-import ContactFooter from './ContactFooter';
+import { Navbar } from './Navbar';
+import { HeroSection } from './HeroSection';
+import { ProjectsSection } from './ProjectsSection';
+import { ThreeDStudioSection } from './ThreeDStudioSection';
+import { AwardsSection } from './AwardsSection';
+import { ExperienceTimeline } from './ExperienceTimeline';
+import { ContactFooter } from './ContactFooter';
 import { ViewfinderCursor } from './ViewfinderCursor';
 
 export default function App() {
