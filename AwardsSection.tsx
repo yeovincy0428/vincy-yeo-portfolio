@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { AWARDS } from '../data/portfolioData';
-import { AwardItem } from '../types';
+import { AWARDS } from './portfolioData';
+import { AwardItem } from './types';
 import { Award, Trophy, Star, Sparkles, X, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { WashiTape, StampSeal, SketchArrow } from './HandDrawnSvg';
 
