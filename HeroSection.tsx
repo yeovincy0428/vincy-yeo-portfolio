@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { PERSONAL_INFO } from '../data/portfolioData';
+import { PERSONAL_INFO } from './portfolioData';
 import { Play, Film, Box, Award, Sparkles, Compass, Download, ExternalLink, ArrowDown } from 'lucide-react';
 import { BrushUnderline, WashiTape, DoodleClapper, DoodleCamera, DoodleStar, SketchArrow, StampSeal } from './HandDrawnSvg';
 
