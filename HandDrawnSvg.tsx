@@ -102,33 +102,20 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
 
     case 'pets-haven':
     default:
-      // 全新精致和风线稿：My Pets Haven 宠物收留所（日式电影视听线稿质感）
+      // My Pets Haven 极简纯净版（仅保留猫咪与收留所小屋）
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF6EE]">
-          {/* 收留所小暖屋与木栅栏 */}
+          {/* 收留所小屋 */}
           <path d="M170 60 L230 25 L290 60 V145 H170 Z" stroke="#383431" strokeWidth="1.8" fill="#ECE4D5" />
           <path d="M210 95 Q230 80 250 95 V145 H210 Z" stroke="#383431" strokeWidth="1.5" fill="#FAF6EE" />
           <path d="M150 120 H300" stroke="#383431" strokeWidth="1" strokeDasharray="2 3" />
 
-          {/* 右上角和风木质挂牌 */}
+          {/* 右上角木质挂牌 */}
           <rect x="200" y="45" width="60" height="18" rx="2" fill="#D8C7B0" stroke="#383431" strokeWidth="1.2" />
           <text x="207" y="58" fill="#5A452B" fontSize="8" fontWeight="bold" fontFamily="monospace">SHELTER</text>
 
-          {/* 精细手绘小狗 (Dog) */}
-          <g transform="translate(45, 75)">
-            {/* 狗身体与尾巴 */}
-            <path d="M30 45 C25 25, 55 20, 65 35 C75 30, 85 45, 75 55 C65 65, 35 65, 30 45 Z" stroke="#383431" strokeWidth="1.8" fill="#E2D4BF" />
-            <path d="M80 40 Q92 30 88 20" stroke="#383431" strokeWidth="2" strokeLinecap="round" fill="none" />
-            {/* 狗头部与下垂耳朵 */}
-            <circle cx="32" cy="30" r="15" stroke="#383431" strokeWidth="1.8" fill="#E2D4BF" />
-            <path d="M20 22 C12 30, 18 45, 24 38 Z" stroke="#383431" strokeWidth="1.5" fill="#C8B396" />
-            {/* 眼睛与狗鼻子 */}
-            <circle cx="28" cy="28" r="1.8" fill="#383431" />
-            <ellipse cx="23" cy="33" rx="2.5" ry="1.8" fill="#C8523B" />
-          </g>
-
-          {/* 精细手绘猫咪 (Cat) - 蹲坐贴紧小狗 */}
-          <g transform="translate(115, 80)">
+          {/* 纯净手绘猫咪 (Cat) */}
+          <g transform="translate(100, 78)">
             {/* 猫身体与卷曲尾巴 */}
             <path d="M20 50 C15 35, 30 25, 38 35 C45 25, 55 35, 50 50 Z" stroke="#383431" strokeWidth="1.8" fill="#FAF8F3" />
             <path d="M48 48 C58 48, 62 38, 56 32" stroke="#383431" strokeWidth="1.5" fill="none" strokeLinecap="round" />
@@ -136,7 +123,7 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
             <circle cx="28" cy="24" r="11" stroke="#383431" strokeWidth="1.8" fill="#FAF8F3" />
             <polygon points="20,16 23,6 28,14" stroke="#383431" strokeWidth="1.5" fill="#FAF8F3" />
             <polygon points="28,14 33,6 36,16" stroke="#383431" strokeWidth="1.5" fill="#FAF8F3" />
-            {/* 胡须与细节 */}
+            {/* 胡须与表情 */}
             <line x1="16" y1="25" x2="8" y2="23" stroke="#383431" strokeWidth="1" />
             <line x1="16" y1="27" x2="9" y2="28" stroke="#383431" strokeWidth="1" />
             <line x1="38" y1="25" x2="46" y2="23" stroke="#383431" strokeWidth="1" />
@@ -145,13 +132,10 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
             <circle cx="32" cy="23" r="1.5" fill="#383431" />
           </g>
 
-          {/* 画面温情水彩爱心装饰 */}
-          <path d="M126 50 Q130 42 135 50 Q140 42 144 50 Q135 62 135 62 Z" fill="#C8523B" opacity="0.9" />
+          {/* 底部平地线 */}
+          <line x1="20" y1="145" x2="300" y2="145" stroke="#383431" strokeWidth="1.8" />
 
-          {/* 构图底部透视平地线 */}
-          <line x1="15" y1="145" x2="305" y2="145" stroke="#383431" strokeWidth="1.8" />
-
-          {/* 标签 */}
+          {/* 标题标签 */}
           <rect x="15" y="15" width="115" height="22" rx="3" fill="#2B2724" />
           <text x="22" y="30" fill="#FFF" fontSize="10" fontWeight="bold">MY PETS HAVEN</text>
         </svg>
