@@ -10,6 +10,33 @@ export const DoodleClapper: React.FC<{ className?: string }> = ({ className = 'w
   </svg>
 );
 
+// 手绘印章效果
+export const StampSeal: React.FC<{ className?: string; text?: string }> = ({
+  className = 'w-16 h-16',
+  text = 'SEAL'
+}) => (
+  <div className={`relative flex items-center justify-center ${className}`}>
+    <svg viewBox="0 0 100 100" className="w-full h-full text-[#C8523B]">
+      <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="3" strokeDasharray="6 3" fill="none" opacity="0.85" />
+      <circle cx="50" cy="50" r="36" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.7" />
+      <text x="50" y="54" textAnchor="middle" fill="currentColor" fontSize="12" fontWeight="bold" fontFamily="monospace" opacity="0.9">
+        {text}
+      </text>
+    </svg>
+  </div>
+);
+
+// 手绘手写指示箭头
+export const SketchArrow: React.FC<{ className?: string; color?: string }> = ({
+  className = 'w-12 h-6',
+  color = '#C8523B'
+}) => (
+  <svg viewBox="0 0 60 30" fill="none" className={className}>
+    <path d="M5 15 C 20 10, 35 25, 50 15" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none" />
+    <path d="M42 8 L52 15 L44 22" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+  </svg>
+);
+
 // 笔刷下划线
 export const BrushUnderline: React.FC<{ className?: string; color?: string }> = ({
   className = 'w-full h-3',
@@ -47,7 +74,7 @@ export const StoryboardPanelIllustration: React.FC<{ type?: string; title?: stri
 }) => {
   switch (type) {
     case 'condo':
-      // Unforgettable 18 原版精美手绘封面
+      // Unforgettable 18 原版手绘高楼封面
       return (
         <svg viewBox="0 0 320 180" fill="none" className="w-full h-full bg-[#FAF8F3]">
           <line x1="20" y1="140" x2="300" y2="140" stroke="#3A3632" strokeWidth="1.5" />
