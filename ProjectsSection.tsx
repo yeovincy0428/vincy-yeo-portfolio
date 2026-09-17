@@ -22,7 +22,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
         lang === 'zh' ? '严格遵循影视视听语言，包含复杂的长镜头与调度设计' : 'Strict adherence to cinematic language, including complex long takes and blocking',
       ],
       tags: ['Hand-drawn Storyboard', 'Cinematic Composition', 'Director Notes'],
-      previewImg: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80',
+      // 换用高清且极速稳定的艺术设计图片
+      previewImg: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
       bilibiliBV: 'BV1Z7Gy6QEvQ',
       pdfUrl: '/storyboards/red-spider-lily.pdf',
       pageCount: 16,
@@ -48,9 +49,9 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
   ];
 
   return (
-    <section className="py-20 px-6 max-w-6xl mx-auto">
+    <section className="py-16 px-6 max-w-6xl mx-auto">
       {/* 板块标题 */}
-      <div className="mb-16 text-center">
+      <div className="mb-14 text-center">
         <span className="text-xs font-mono uppercase tracking-widest text-[#C8523B] bg-[#C8523B]/10 px-3 py-1 rounded-full">
           {lang === 'zh' ? '核心作品展示' : 'FEATURED WORKS'}
         </span>
@@ -66,7 +67,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
 
       {/* 作品卡片列表 */}
       <div className="space-y-16">
-        {projects.map((project, idx) => (
+        {projects.map((project) => (
           <div 
             key={project.id}
             className="bg-white rounded-2xl border border-[#1C1C1C]/10 p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8"
@@ -78,8 +79,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ lang }) => {
                   src={project.previewImg} 
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    // 防裂图处理：如果图片加载失败，自动换成备用美图
+                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=80';
+                  }}
                 />
-                <div className="absolute top-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-white text-[11px] font-mono px-3 py-1 rounded-full">
+                <div className="absolute top-3 left-3 bg-[#1C1C1C]/80 backdrop-blur-md text-white text-[11px] font-mono px-3 py-1 rounded-full z-10">
                   📖 {project.pageCount} {lang === 'zh' ? '页手绘分镜' : 'Page Storyboard'} · {project.meta}
                 </div>
               </div>
