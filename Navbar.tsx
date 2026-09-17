@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
-import { PERSONAL_INFO } from '../data/portfolioData';
+import { PERSONAL_INFO } from './portfolioData';
 import { Mail, Menu, X, Globe, HardDrive } from 'lucide-react';
 import { DoodleClapper, BrushUnderline } from './HandDrawnSvg';
 
