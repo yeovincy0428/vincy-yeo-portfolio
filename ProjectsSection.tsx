@@ -1,34 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Play, Film, ExternalLink, BookOpen, Check, Filter } from 'lucide-react';
+import { StoryboardPanelIllustration, WashiTape } from './HandDrawnSvg';
 import { StoryboardViewerModal } from './StoryboardViewerModal';
-
-// 胶带悬浮装饰 SVG 组件
-const WashiTape: React.FC<{ className?: string; color?: string; angle?: string }> = ({ 
-  className = "w-24 h-6", 
-  color = "#E7DFCF", 
-  angle = "-2.5deg" 
-}) => (
-  <div 
-    className={`${className} opacity-80 shadow-xs pointer-events-none select-none`}
-    style={{ 
-      backgroundColor: color, 
-      transform: `rotate(${angle})`,
-      clipPath: 'polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%, 3% 50%)'
-    }} 
-  />
-);
-
-// 手绘占位插画组件 (如果缺少 HandDrawnSvg 文件可直接在此内联渲染)
-const StoryboardPanelIllustration: React.FC<{ type?: string; title?: string }> = ({ title }) => (
-  <div className="w-full h-full bg-[#FAF6EE] flex flex-col items-center justify-center p-4 text-center border-dashed border-2 border-[#D8C7B0]">
-    <div className="w-12 h-12 rounded-full bg-[#E7DFCF] flex items-center justify-center mb-2 text-[#C8523B]">
-      <Film className="w-6 h-6" />
-    </div>
-    <span className="text-xs font-serif font-bold text-[#383431]">{title || '手绘分镜草稿'}</span>
-    <span className="text-[10px] font-mono text-[#8C8275] mt-1">HAND-DRAWN STORYBOARD</span>
-  </div>
-);
 
 interface ProjectItem {
   id: string;
@@ -49,8 +23,7 @@ interface ProjectItem {
   storyboardPreview: Array<{ sceneNo: string; panelDoodleType: string }>;
 }
 
-// 默认的项目完整数据集（包含你指定的 Unforgettable 18, Eyes On Me, My Pets Haven）
-const PORTFOLIO_PROJECTS: ProjectItem[] = [
+const PROJECTS_DATA: ProjectItem[] = [
   {
     id: 'p1',
     title: '《Unforgettable 18》手绘电影分镜脚本',
@@ -71,9 +44,7 @@ const PORTFOLIO_PROJECTS: ProjectItem[] = [
     cameraSetupsCount: 32,
     awards: ['入围第18届青年影像节最佳镜头设计', '最佳手绘分镜创作奖'],
     storyboardPreview: [
-      { sceneNo: 'SCENE 01', panelDoodleType: 'condo' },
-      { sceneNo: 'SCENE 02', panelDoodleType: 'street' },
-      { sceneNo: 'SCENE 03', panelDoodleType: 'close-up' }
+      { sceneNo: 'SCENE 01', panelDoodleType: 'condo' }
     ]
   },
   {
@@ -95,8 +66,7 @@ const PORTFOLIO_PROJECTS: ProjectItem[] = [
     storyboardPagesCount: 12,
     cameraSetupsCount: 24,
     storyboardPreview: [
-      { sceneNo: 'SCENE 01', panelDoodleType: 'street' },
-      { sceneNo: 'SCENE 02', panelDoodleType: 'condo' }
+      { sceneNo: 'SCENE 01', panelDoodleType: 'anime-fight' }
     ]
   },
   {
@@ -118,12 +88,11 @@ const PORTFOLIO_PROJECTS: ProjectItem[] = [
     storyboardPagesCount: 16,
     cameraSetupsCount: 20,
     storyboardPreview: [
-      { sceneNo: 'SCENE 01', panelDoodleType: 'close-up' }
+      { sceneNo: 'SCENE 01', panelDoodleType: 'adoption-box' }
     ]
   }
 ];
 
-// 单个带视差与手绘风纸质质感的卡片组件
 const ParallaxProjectCard: React.FC<{
   project: ProjectItem;
   idx: number;
@@ -150,7 +119,6 @@ const ParallaxProjectCard: React.FC<{
       style={{ scale: cardScale }}
       className="bg-white rounded-3xl border-2 border-[#383431] p-6 md:p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden group"
     >
-      {/* 胶带悬浮装饰 */}
       <motion.div style={{ y: yTape }} className="absolute top-4 right-6 hidden sm:block z-10">
         <WashiTape
           className="w-24 h-6"
@@ -160,7 +128,7 @@ const ParallaxProjectCard: React.FC<{
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-1">
-        {/* 左侧：手绘舞台与 B站入口 */}
+        {/* 左侧：手绘风封面插画 */}
         <motion.div style={{ y: yArtwork }} className="lg:col-span-6 flex flex-col space-y-4">
           <div className="relative aspect-[16/10] w-full rounded-2xl border-2 border-[#383431] overflow-hidden bg-[#FAF8F3] shadow-sm group-hover:border-[#C8523B] transition-colors">
             <StoryboardPanelIllustration
@@ -187,30 +155,12 @@ const ParallaxProjectCard: React.FC<{
             </button>
           </div>
 
-          {/* 缩略图栏 */}
-          {project.storyboardPreview.length > 1 && (
-            <div className="grid grid-cols-3 gap-2">
-              {project.storyboardPreview.slice(0, 3).map((panel, pIdx) => (
-                <div
-                  key={pIdx}
-                  onClick={() => onInspect(project)}
-                  className="aspect-[16/10] rounded-xl border border-[#383431]/40 overflow-hidden cursor-pointer hover:border-[#C8523B] transition-all hover:-translate-y-0.5"
-                  title="点击查看此镜头"
-                >
-                  <StoryboardPanelIllustration type={panel.panelDoodleType} title={panel.sceneNo} />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* B 站直接观看栏 */}
           <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF6EE] border border-[#383431]/30">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold text-[#8C8275]">Bilibili BV:</span>
               <button
                 onClick={(e) => onCopyBvid(project.bilibiliBvid, e)}
                 className="text-xs font-mono font-bold text-[#1C1917] bg-white px-2 py-0.5 rounded border border-[#D4C9BA] hover:bg-[#F2ECE1] transition-colors flex items-center gap-1 cursor-pointer"
-                title="点击复制链接"
               >
                 <span>{project.bilibiliBvid}</span>
                 {copiedBvid === project.bilibiliBvid ? <Check className="w-3 h-3 text-emerald-600" /> : null}
@@ -230,7 +180,7 @@ const ParallaxProjectCard: React.FC<{
           </div>
         </motion.div>
 
-        {/* 右侧：详细文字说明 */}
+        {/* 右侧：详细说明 */}
         <motion.div style={{ y: yDetails }} className="lg:col-span-6 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex flex-wrap gap-1.5 mb-3">
@@ -304,7 +254,7 @@ export const ProjectsSection: React.FC<{ lang?: 'zh' | 'en' }> = ({ lang = 'zh' 
   const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
   const [copiedBvid, setCopiedBvid] = useState<string | null>(null);
 
-  const filteredProjects = PORTFOLIO_PROJECTS.filter(p => filter === 'all' || p.type === filter);
+  const filteredProjects = PROJECTS_DATA.filter(p => filter === 'all' || p.type === filter);
 
   const handleCopyBvid = (bvid: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -325,20 +275,14 @@ export const ProjectsSection: React.FC<{ lang?: 'zh' | 'en' }> = ({ lang = 'zh' 
             <h2 className="text-3xl md:text-5xl font-bold font-serif text-[#1C1917] tracking-tight">
               {lang === 'zh' ? '作品集与手绘分镜工程' : 'Portfolio & Storyboard Projects'}
             </h2>
-            <p className="mt-2 text-base text-[#57534E] max-w-2xl">
-              {lang === 'zh'
-                ? '每一个镜头都经历 40+ 页现场分镜、3D 镜头预演与光影蓝图推敲。点击作品可直接跳转 B 站观看或展开深度分镜拆解。'
-                : 'Each project is backed by comprehensive storyboard pages, 3D camera pre-visualization, and lighting schematics.'}
-            </p>
           </div>
 
-          {/* 分类筛选器 */}
           <div className="flex flex-wrap items-center gap-2">
             {[
-              { id: 'all', labelZh: `全部类型 (${PORTFOLIO_PROJECTS.length})`, labelEn: `All Types (${PORTFOLIO_PROJECTS.length})` },
-              { id: 'Narrative Film', labelZh: '剧情短片', labelEn: 'Narrative Film' },
-              { id: 'Animation & VFX', labelZh: '动画与合成', labelEn: 'Animation & VFX' },
-              { id: 'Documentary', labelZh: '纪录片', labelEn: 'Documentary' }
+              { id: 'all', labelZh: `全部类型 (${PROJECTS_DATA.length})` },
+              { id: 'Narrative Film', labelZh: '剧情短片' },
+              { id: 'Animation & VFX', labelZh: '动画与合成' },
+              { id: 'Documentary', labelZh: '纪录片' }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -350,38 +294,27 @@ export const ProjectsSection: React.FC<{ lang?: 'zh' | 'en' }> = ({ lang = 'zh' 
                     : 'bg-white text-[#57534E] border-[#D4C9BA] hover:bg-[#F2ECE1] hover:text-[#1C1917]'
                 }`}
               >
-                {lang === 'zh' ? tab.labelZh : tab.labelEn}
+                {tab.labelZh}
               </button>
             ))}
           </div>
         </div>
 
-        {/* 卡片列表 */}
         <div className="space-y-12">
-          {filteredProjects.length > 0 ? (
-            filteredProjects.map((project, idx) => (
-              <ParallaxProjectCard
-                key={project.id}
-                project={project}
-                idx={idx}
-                lang={lang}
-                onInspect={setActiveModalProject}
-                onCopyBvid={handleCopyBvid}
-                copiedBvid={copiedBvid}
-              />
-            ))
-          ) : (
-            <div className="bg-white rounded-2xl border-2 border-[#383431] p-12 text-center my-8">
-              <div className="w-12 h-12 rounded-full bg-[#FAF6EE] text-[#C8523B] mx-auto flex items-center justify-center mb-3">
-                <Filter className="w-6 h-6" />
-              </div>
-              <p className="text-base font-serif text-[#1C1C10]">暂无匹配作品</p>
-            </div>
-          )}
+          {filteredProjects.map((project, idx) => (
+            <ParallaxProjectCard
+              key={project.id}
+              project={project}
+              idx={idx}
+              lang={lang}
+              onInspect={setActiveModalProject}
+              onCopyBvid={handleCopyBvid}
+              copiedBvid={copiedBvid}
+            />
+          ))}
         </div>
       </div>
 
-      {/* PDF / 分镜预览弹窗 (包含基础兜底) */}
       {activeModalProject && (
         <StoryboardViewerModal
           isOpen={!!activeModalProject}
